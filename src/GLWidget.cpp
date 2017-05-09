@@ -13,7 +13,7 @@ GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent), m_theta(180.0f), m_
 	setMouseTracking(true);
 	setFocusPolicy(Qt::StrongFocus);
 
-	// Scale de la scène (zoom)
+	// Scale de la scène ((zoom)
 	m_scale = 1;
 	m_incrementScale = 1;
 	// Position des deux lumières et couleurs ambiant et diffuse
