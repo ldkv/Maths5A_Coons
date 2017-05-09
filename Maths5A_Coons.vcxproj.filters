@@ -44,6 +44,12 @@
     <ClInclude Include="include\AlgoMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Subdivision_Catmull.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Subdivision_LoopKobbelt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="include\maths5a_coons.h">
@@ -82,6 +88,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GLWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Subdivision_Catmull.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Subdivision_LoopKobbelt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

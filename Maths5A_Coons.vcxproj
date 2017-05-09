@@ -74,6 +74,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Subdivision_Catmull.h" />
+    <ClInclude Include="Subdivision_LoopKobbelt.h" />
     <CustomBuild Include="include\maths5a_coons.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing maths5a_coons.h...</Message>
@@ -119,6 +121,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Subdivision_Catmull.cpp" />
+    <ClCompile Include="Subdivision_LoopKobbelt.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="form\maths5a_coons.ui">
