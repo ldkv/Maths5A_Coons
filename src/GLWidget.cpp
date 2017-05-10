@@ -37,6 +37,12 @@ void GLWidget::timeOutSlot()
 	update();
 }
 
+
+vector<Point> cubePoints;
+vector<Face> cubeFaces;
+vector<int> cubeIndices;
+vector<Face> dividedCube;
+
 // Initialisation du module OpenGL
 void GLWidget::initializeGL()
 {
@@ -55,6 +61,11 @@ void GLWidget::initializeGL()
 
 	// Chargement de la texture
 	LoadGLTextures("texture.jpg");
+
+	createCube();
+	dividedCube = subdivide(cubeFaces);
+	//dividedCube = subdivide(dividedCube);
+	//dividedCube = subdivide(dividedCube);
 }
 
 // Redimensionner de la scène pour adapter à la fenêtre principale
@@ -122,6 +133,9 @@ void GLWidget::drawScene()
 		// Surbriller les points de raccordement
 		drawPoints(points, { 0, 1.0, 0 }, 10);
 	}
+
+	drawFaces(cubeFaces);
+	drawFaces(dividedCube);
 }
 
 void GLWidget::LoadGLTextures(const char * name)
@@ -205,6 +219,27 @@ void GLWidget::drawPointsMatrix(vector<vector<QVector3D>> pts, QVector3D color, 
 		for (int j = 0; j < n; j++)
 			glVector3D(pts[i][j], true);
 	glEnd();
+}
+
+void GLWidget::drawFaces(vector<Face> faces)
+{
+	int nbPoints = faces.size();
+	if (nbPoints == 0)
+		return;
+	glColor3f(150.0f, 150.0f, 150.0f);
+	for (int i = 0; i < faces.size(); i++)
+	{
+		for(int j = 0; j < faces[i].points.size()-1; j++) {
+			glBegin(GL_LINES);
+			glVertex3f(faces[i].points[j].coord.x(), faces[i].points[j].coord.y(), faces[i].points[j].coord.z());
+			glVertex3f(faces[i].points[j+1].coord.x(), faces[i].points[j+1].coord.y(), faces[i].points[j+1].coord.z());
+			glEnd();
+		}
+		glBegin(GL_LINES);
+		glVertex3f(faces[i].points[faces[i].points.size()-1].coord.x(), faces[i].points[faces[i].points.size()-1].coord.y(), faces[i].points[faces[i].points.size()-1].coord.z());
+		glVertex3f(faces[i].points[0].coord.x(), faces[i].points[0].coord.y(), faces[i].points[0].coord.z());
+		glEnd();
+	}
 }
 
 // Conversion de coordonnées d'écran à coordonnées de la scène OPENGL
@@ -379,4 +414,31 @@ void GLWidget::resetData()
 	points.clear();
 	degU = 0;
 	degV = 0;
+}
+
+void GLWidget::createCube() {
+	/*cubePoints.push_back(QVector3D(-50, -50, -50));
+	cubePoints.push_back(QVector3D(-50, 50, -50));
+	cubePoints.push_back(QVector3D(-50, -50, 50));
+	cubePoints.push_back(QVector3D(-50, 50, 50));
+	cubePoints.push_back(QVector3D(50, -50, -50));
+	cubePoints.push_back(QVector3D(50, -50, 50));
+	cubePoints.push_back(QVector3D(50, 50, 50));
+	cubePoints.push_back(QVector3D(50, 50, -50));*/
+	vector<Point> tmp = { QVector3D(-50, -50, -50), QVector3D(50, -50, -50), QVector3D(50, 50, -50), QVector3D(-50, 50, -50) };
+	cubeFaces.push_back(tmp);
+	tmp = { QVector3D(-50, -50, -50), QVector3D(-50, -50, 50), QVector3D(50, -50, 50), QVector3D(50, -50, -50) };
+	cubeFaces.push_back(tmp);
+	tmp = { QVector3D(-50, -50, -50), QVector3D(-50, 50, -50), QVector3D(-50, 50, 50), QVector3D(-50, -50, 50) };
+	cubeFaces.push_back(tmp);
+	tmp = { QVector3D(-50, 50, 50), QVector3D(50, 50, 50), QVector3D(50, -50, 50), QVector3D(-50, -50, 50) };
+	cubeFaces.push_back(tmp);
+	tmp = { QVector3D(-50, 50, -50), QVector3D(-50, 50, 50), QVector3D(50, 50, 50), QVector3D(50, 50, -50) };
+	cubeFaces.push_back(tmp);
+	tmp = { QVector3D(50, 50, -50), QVector3D(50, 50, 50), QVector3D(50, -50, 50), QVector3D(50, -50, -50) };
+	cubeFaces.push_back(tmp);
+}
+
+void GLWidget::subcat() {
+
 }

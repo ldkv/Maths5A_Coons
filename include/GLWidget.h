@@ -10,6 +10,7 @@
 #include <vector>
 #include <math.h>
 #include "AlgoMath.h"
+#include "Subdivision_Catmull.h"
 
 using namespace std;
 
@@ -140,4 +141,8 @@ private:
 	bool showLightSpecular = false;
 
 	QTimer *t_Timer;
+
+	void createCube();
+	void subcat();
+	void drawFaces(vector<Face> faces);
 };
