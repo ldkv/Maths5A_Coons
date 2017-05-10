@@ -6,6 +6,8 @@
 
 using namespace std;
 
+#define PI 3.14159265358979
+
 // Fonction intermédiaire pour l'algo de Casteljau
 QVector3D getCasteljauPoint(vector<QVector3D> poly, double t);
 // Calculer la surface de Bézier à partir d'un ensemble de points de contrôle

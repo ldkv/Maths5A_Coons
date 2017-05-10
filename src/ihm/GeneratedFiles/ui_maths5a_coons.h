@@ -15,7 +15,6 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDockWidget>
-#include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
@@ -49,22 +48,29 @@ public:
     QVBoxLayout *verticalLayout_2;
     QGroupBox *groupMode;
     QGridLayout *gridLayout;
-    QRadioButton *rbAdjust;
     QSpinBox *spinPrecision;
+    QRadioButton *rbAdjust;
+    QLabel *laHorizontal;
+    QLabel *label;
+    QPushButton *bJoin;
     QRadioButton *rbRandom;
     QLabel *laVertical;
-    QLabel *laHorizontal;
-    QPushButton *bJoin;
-    QLabel *label;
-    QSpinBox *spinVerti;
-    QSpinBox *spinHori;
-    QSpinBox *spinJoinOrder;
     QPushButton *bCancelJoin;
     QLabel *laPrecision;
+    QSpinBox *spinHori;
+    QSpinBox *spinVerti;
+    QSpinBox *spinJoinOrder;
+    QFrame *line;
     QPushButton *bResetData;
     QFrame *line_2;
-    QFrame *line;
     QLabel *laTimeCalcSurface;
+    QGroupBox *groupRotation;
+    QGridLayout *gridLayout_3;
+    QRadioButton *radioButton;
+    QRadioButton *rbRotObj;
+    QRadioButton *rbRotCam;
+    QPushButton *pushButton;
+    QPushButton *pushButton_3;
     QCheckBox *cbShowWireframe;
     QCheckBox *cbShowTexture;
     QCheckBox *cbShowPoints;
@@ -78,16 +84,6 @@ public:
     QPushButton *bColorS2;
     QCheckBox *cbLight2;
     QPushButton *bColorObj;
-    QGroupBox *groupRotation;
-    QGridLayout *gridLayout_3;
-    QDoubleSpinBox *spinZ;
-    QDoubleSpinBox *spinY;
-    QDoubleSpinBox *spinX;
-    QLabel *label_2;
-    QLabel *label_3;
-    QLabel *label_4;
-    QRadioButton *rbRotObj;
-    QRadioButton *rbRotCam;
     QSpacerItem *verticalSpacer;
     QPushButton *bResetCam;
     QPushButton *bQuit;
@@ -135,12 +131,6 @@ public:
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        rbAdjust = new QRadioButton(groupMode);
-        rbAdjust->setObjectName(QStringLiteral("rbAdjust"));
-        rbAdjust->setChecked(true);
-
-        gridLayout->addWidget(rbAdjust, 1, 1, 1, 1);
-
         spinPrecision = new QSpinBox(groupMode);
         spinPrecision->setObjectName(QStringLiteral("spinPrecision"));
         spinPrecision->setMinimum(2);
@@ -148,6 +138,27 @@ public:
         spinPrecision->setValue(10);
 
         gridLayout->addWidget(spinPrecision, 6, 2, 1, 1);
+
+        rbAdjust = new QRadioButton(groupMode);
+        rbAdjust->setObjectName(QStringLiteral("rbAdjust"));
+        rbAdjust->setChecked(true);
+
+        gridLayout->addWidget(rbAdjust, 1, 1, 1, 1);
+
+        laHorizontal = new QLabel(groupMode);
+        laHorizontal->setObjectName(QStringLiteral("laHorizontal"));
+
+        gridLayout->addWidget(laHorizontal, 2, 1, 1, 1);
+
+        label = new QLabel(groupMode);
+        label->setObjectName(QStringLiteral("label"));
+
+        gridLayout->addWidget(label, 9, 1, 1, 1);
+
+        bJoin = new QPushButton(groupMode);
+        bJoin->setObjectName(QStringLiteral("bJoin"));
+
+        gridLayout->addWidget(bJoin, 11, 2, 1, 1);
 
         rbRandom = new QRadioButton(groupMode);
         rbRandom->setObjectName(QStringLiteral("rbRandom"));
@@ -160,43 +171,6 @@ public:
 
         gridLayout->addWidget(laVertical, 4, 1, 1, 1);
 
-        laHorizontal = new QLabel(groupMode);
-        laHorizontal->setObjectName(QStringLiteral("laHorizontal"));
-
-        gridLayout->addWidget(laHorizontal, 2, 1, 1, 1);
-
-        bJoin = new QPushButton(groupMode);
-        bJoin->setObjectName(QStringLiteral("bJoin"));
-
-        gridLayout->addWidget(bJoin, 11, 2, 1, 1);
-
-        label = new QLabel(groupMode);
-        label->setObjectName(QStringLiteral("label"));
-
-        gridLayout->addWidget(label, 9, 1, 1, 1);
-
-        spinVerti = new QSpinBox(groupMode);
-        spinVerti->setObjectName(QStringLiteral("spinVerti"));
-        spinVerti->setMinimum(0);
-        spinVerti->setMaximum(20);
-        spinVerti->setValue(0);
-
-        gridLayout->addWidget(spinVerti, 4, 2, 1, 1);
-
-        spinHori = new QSpinBox(groupMode);
-        spinHori->setObjectName(QStringLiteral("spinHori"));
-        spinHori->setMinimum(0);
-        spinHori->setMaximum(20);
-        spinHori->setValue(0);
-
-        gridLayout->addWidget(spinHori, 2, 2, 1, 1);
-
-        spinJoinOrder = new QSpinBox(groupMode);
-        spinJoinOrder->setObjectName(QStringLiteral("spinJoinOrder"));
-        spinJoinOrder->setMaximum(2);
-
-        gridLayout->addWidget(spinJoinOrder, 9, 2, 1, 1);
-
         bCancelJoin = new QPushButton(groupMode);
         bCancelJoin->setObjectName(QStringLiteral("bCancelJoin"));
 
@@ -206,6 +180,35 @@ public:
         laPrecision->setObjectName(QStringLiteral("laPrecision"));
 
         gridLayout->addWidget(laPrecision, 6, 1, 1, 1);
+
+        spinHori = new QSpinBox(groupMode);
+        spinHori->setObjectName(QStringLiteral("spinHori"));
+        spinHori->setMinimum(0);
+        spinHori->setMaximum(20);
+        spinHori->setValue(0);
+
+        gridLayout->addWidget(spinHori, 2, 2, 1, 1);
+
+        spinVerti = new QSpinBox(groupMode);
+        spinVerti->setObjectName(QStringLiteral("spinVerti"));
+        spinVerti->setMinimum(0);
+        spinVerti->setMaximum(20);
+        spinVerti->setValue(0);
+
+        gridLayout->addWidget(spinVerti, 4, 2, 1, 1);
+
+        spinJoinOrder = new QSpinBox(groupMode);
+        spinJoinOrder->setObjectName(QStringLiteral("spinJoinOrder"));
+        spinJoinOrder->setMaximum(2);
+
+        gridLayout->addWidget(spinJoinOrder, 9, 2, 1, 1);
+
+        line = new QFrame(groupMode);
+        line->setObjectName(QStringLiteral("line"));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+
+        gridLayout->addWidget(line, 8, 1, 1, 2);
 
         bResetData = new QPushButton(groupMode);
         bResetData->setObjectName(QStringLiteral("bResetData"));
@@ -219,13 +222,6 @@ public:
 
         gridLayout->addWidget(line_2, 13, 1, 1, 2);
 
-        line = new QFrame(groupMode);
-        line->setObjectName(QStringLiteral("line"));
-        line->setFrameShape(QFrame::HLine);
-        line->setFrameShadow(QFrame::Sunken);
-
-        gridLayout->addWidget(line, 8, 1, 1, 2);
-
         laTimeCalcSurface = new QLabel(groupMode);
         laTimeCalcSurface->setObjectName(QStringLiteral("laTimeCalcSurface"));
         laTimeCalcSurface->setAlignment(Qt::AlignCenter);
@@ -234,6 +230,41 @@ public:
 
 
         verticalLayout_2->addWidget(groupMode);
+
+        groupRotation = new QGroupBox(dockWidgetContents);
+        groupRotation->setObjectName(QStringLiteral("groupRotation"));
+        gridLayout_3 = new QGridLayout(groupRotation);
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setContentsMargins(11, 11, 11, 11);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        radioButton = new QRadioButton(groupRotation);
+        radioButton->setObjectName(QStringLiteral("radioButton"));
+
+        gridLayout_3->addWidget(radioButton, 2, 0, 1, 1);
+
+        rbRotObj = new QRadioButton(groupRotation);
+        rbRotObj->setObjectName(QStringLiteral("rbRotObj"));
+        rbRotObj->setChecked(true);
+
+        gridLayout_3->addWidget(rbRotObj, 0, 0, 1, 1);
+
+        rbRotCam = new QRadioButton(groupRotation);
+        rbRotCam->setObjectName(QStringLiteral("rbRotCam"));
+
+        gridLayout_3->addWidget(rbRotCam, 1, 0, 1, 1);
+
+        pushButton = new QPushButton(groupRotation);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+
+        gridLayout_3->addWidget(pushButton, 1, 1, 1, 1);
+
+        pushButton_3 = new QPushButton(groupRotation);
+        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+
+        gridLayout_3->addWidget(pushButton_3, 2, 1, 1, 1);
+
+
+        verticalLayout_2->addWidget(groupRotation);
 
         cbShowWireframe = new QCheckBox(dockWidgetContents);
         cbShowWireframe->setObjectName(QStringLiteral("cbShowWireframe"));
@@ -308,65 +339,6 @@ public:
 
         verticalLayout_2->addWidget(groupLight);
 
-        groupRotation = new QGroupBox(dockWidgetContents);
-        groupRotation->setObjectName(QStringLiteral("groupRotation"));
-        gridLayout_3 = new QGridLayout(groupRotation);
-        gridLayout_3->setSpacing(6);
-        gridLayout_3->setContentsMargins(11, 11, 11, 11);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        spinZ = new QDoubleSpinBox(groupRotation);
-        spinZ->setObjectName(QStringLiteral("spinZ"));
-        spinZ->setDecimals(1);
-        spinZ->setMaximum(359.9);
-        spinZ->setSingleStep(1);
-
-        gridLayout_3->addWidget(spinZ, 3, 1, 1, 1);
-
-        spinY = new QDoubleSpinBox(groupRotation);
-        spinY->setObjectName(QStringLiteral("spinY"));
-        spinY->setDecimals(1);
-        spinY->setMaximum(359.9);
-        spinY->setSingleStep(1);
-
-        gridLayout_3->addWidget(spinY, 2, 1, 1, 1);
-
-        spinX = new QDoubleSpinBox(groupRotation);
-        spinX->setObjectName(QStringLiteral("spinX"));
-        spinX->setDecimals(1);
-        spinX->setMaximum(359.9);
-        spinX->setSingleStep(1);
-
-        gridLayout_3->addWidget(spinX, 1, 1, 1, 1);
-
-        label_2 = new QLabel(groupRotation);
-        label_2->setObjectName(QStringLiteral("label_2"));
-
-        gridLayout_3->addWidget(label_2, 1, 0, 1, 1);
-
-        label_3 = new QLabel(groupRotation);
-        label_3->setObjectName(QStringLiteral("label_3"));
-
-        gridLayout_3->addWidget(label_3, 2, 0, 1, 1);
-
-        label_4 = new QLabel(groupRotation);
-        label_4->setObjectName(QStringLiteral("label_4"));
-
-        gridLayout_3->addWidget(label_4, 3, 0, 1, 1);
-
-        rbRotObj = new QRadioButton(groupRotation);
-        rbRotObj->setObjectName(QStringLiteral("rbRotObj"));
-        rbRotObj->setChecked(true);
-
-        gridLayout_3->addWidget(rbRotObj, 0, 0, 1, 1);
-
-        rbRotCam = new QRadioButton(groupRotation);
-        rbRotCam->setObjectName(QStringLiteral("rbRotCam"));
-
-        gridLayout_3->addWidget(rbRotCam, 0, 1, 1, 1);
-
-
-        verticalLayout_2->addWidget(groupRotation);
-
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout_2->addItem(verticalSpacer);
@@ -394,17 +366,23 @@ public:
     {
         Maths5A_CoonsClass->setWindowTitle(QApplication::translate("Maths5A_CoonsClass", "Math5A ESGI - Coons", 0));
         dockWidget->setWindowTitle(QApplication::translate("Maths5A_CoonsClass", "Configuration", 0));
-        groupMode->setTitle(QApplication::translate("Maths5A_CoonsClass", "Mode de g\303\251n\303\251ration des points", 0));
+        groupMode->setTitle(QApplication::translate("Maths5A_CoonsClass", "Mode de g\303\251n\303\251ration B\303\251ziers", 0));
         rbAdjust->setText(QApplication::translate("Maths5A_CoonsClass", "R\303\251glage de l'hauteur", 0));
+        laHorizontal->setText(QApplication::translate("Maths5A_CoonsClass", "Degr\303\251 horizontal", 0));
+        label->setText(QApplication::translate("Maths5A_CoonsClass", "Ordre de raccordement", 0));
+        bJoin->setText(QApplication::translate("Maths5A_CoonsClass", "Raccorder", 0));
         rbRandom->setText(QApplication::translate("Maths5A_CoonsClass", "Al\303\251atoire", 0));
         laVertical->setText(QApplication::translate("Maths5A_CoonsClass", "Degr\303\251 vertical", 0));
-        laHorizontal->setText(QApplication::translate("Maths5A_CoonsClass", "Degr\303\251 horizontal", 0));
-        bJoin->setText(QApplication::translate("Maths5A_CoonsClass", "Raccorder", 0));
-        label->setText(QApplication::translate("Maths5A_CoonsClass", "Ordre de raccordement", 0));
         bCancelJoin->setText(QApplication::translate("Maths5A_CoonsClass", "Annuler", 0));
         laPrecision->setText(QApplication::translate("Maths5A_CoonsClass", "Nombre de pas (pr\303\251cision)", 0));
         bResetData->setText(QApplication::translate("Maths5A_CoonsClass", "R\303\251initialiser les donn\303\251es", 0));
         laTimeCalcSurface->setText(QApplication::translate("Maths5A_CoonsClass", "0 us", 0));
+        groupRotation->setTitle(QApplication::translate("Maths5A_CoonsClass", "Subdivision", 0));
+        radioButton->setText(QApplication::translate("Maths5A_CoonsClass", "Kobbelt", 0));
+        rbRotObj->setText(QApplication::translate("Maths5A_CoonsClass", "Catmull-Clark", 0));
+        rbRotCam->setText(QApplication::translate("Maths5A_CoonsClass", "Loop", 0));
+        pushButton->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Cube", 0));
+        pushButton_3->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
         cbShowWireframe->setText(QApplication::translate("Maths5A_CoonsClass", "Filaire", 0));
         cbShowTexture->setText(QApplication::translate("Maths5A_CoonsClass", "Texture", 0));
         cbShowPoints->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher les points", 0));
@@ -417,12 +395,6 @@ public:
         bColorS2->setText(QString());
         cbLight2->setText(QApplication::translate("Maths5A_CoonsClass", "Source 2", 0));
         bColorObj->setText(QApplication::translate("Maths5A_CoonsClass", "Couleur du patch", 0));
-        groupRotation->setTitle(QApplication::translate("Maths5A_CoonsClass", "Rotation", 0));
-        label_2->setText(QApplication::translate("Maths5A_CoonsClass", "X", 0));
-        label_3->setText(QApplication::translate("Maths5A_CoonsClass", "Y", 0));
-        label_4->setText(QApplication::translate("Maths5A_CoonsClass", "Z", 0));
-        rbRotObj->setText(QApplication::translate("Maths5A_CoonsClass", "Objet", 0));
-        rbRotCam->setText(QApplication::translate("Maths5A_CoonsClass", "Cam\303\251ra", 0));
         bResetCam->setText(QApplication::translate("Maths5A_CoonsClass", "R\303\251initialiser le cam\303\251ra", 0));
         bQuit->setText(QApplication::translate("Maths5A_CoonsClass", "Quitter", 0));
     } // retranslateUi

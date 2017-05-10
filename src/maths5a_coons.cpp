@@ -56,12 +56,7 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	bGroup->addButton(ui.bColorS2, 1);
 	bGroup->addButton(ui.bColorObj, 2);
 	connect(bGroup, SIGNAL(buttonClicked(int)), this, SLOT(setColor(int)));
-	// Rotation Quaternion
-	connect(ui.rbRotObj, SIGNAL(clicked()), this, SLOT(setModeRotation()));
-	connect(ui.rbRotCam, SIGNAL(clicked()), this, SLOT(setModeRotation()));
-	connect(ui.spinX, SIGNAL(valueChanged(double)), this, SLOT(setRotation()));
-	connect(ui.spinY, SIGNAL(valueChanged(double)), this, SLOT(setRotation()));
-	connect(ui.spinZ, SIGNAL(valueChanged(double)), this, SLOT(setRotation()));
+
 	// Signal depuis le GLWidget
 	connect(glScene, SIGNAL(labelChanged()), this, SLOT(updateLabelTimer()));
 	connect(glScene, SIGNAL(mouseMoved()), this, SLOT(updateStatus()));
@@ -102,45 +97,11 @@ void Maths5A_Coons::setModeGenerationPoints()
 {
 }
 
-// Mettre à jour le mode de rotation pour l'objet ou pour la caméra
-void Maths5A_Coons::setModeRotation()
-{
-	if (ui.rbRotObj->isChecked())
-	{
-		ui.spinX->setValue(glScene->rotObj.x());
-		ui.spinY->setValue(glScene->rotObj.y());
-		ui.spinZ->setValue(glScene->rotObj.z());
-	}
-	else if (ui.rbRotCam->isChecked())
-	{
-		ui.spinX->setValue(glScene->rotCam.x());
-		ui.spinY->setValue(glScene->rotCam.y());
-		ui.spinZ->setValue(glScene->rotCam.z());
-	}
-}
-
-// Mettre à jour les valeurs de rotation
-void Maths5A_Coons::setRotation()
-{
-	double rotX = ui.spinX->value();
-	double rotY = ui.spinY->value();
-	double rotZ = ui.spinZ->value();
-}
-
-// Remise la rotation UI à 0
-void Maths5A_Coons::resetRotation()
-{
-	ui.spinX->setValue(0);
-	ui.spinY->setValue(0);
-	ui.spinZ->setValue(0);
-}
-
 // Remise à défaut le mode de génération
 void Maths5A_Coons::resetData()
 {
 	ui.spinHori->setValue(0);
 	ui.spinVerti->setValue(0);
-	resetRotation();
 	glScene->resetData();
 }
 
