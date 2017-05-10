@@ -66,11 +66,11 @@ public:
     QLabel *laTimeCalcSurface;
     QGroupBox *groupRotation;
     QGridLayout *gridLayout_3;
-    QRadioButton *radioButton;
-    QRadioButton *rbRotObj;
-    QRadioButton *rbRotCam;
-    QPushButton *pushButton;
-    QPushButton *pushButton_3;
+    QRadioButton *rbKobbelt;
+    QRadioButton *rbCatmull;
+    QRadioButton *rbLoop;
+    QPushButton *bGenerateCube;
+    QPushButton *bSubdivide;
     QCheckBox *cbShowWireframe;
     QCheckBox *cbShowTexture;
     QCheckBox *cbShowPoints;
@@ -237,31 +237,31 @@ public:
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        radioButton = new QRadioButton(groupRotation);
-        radioButton->setObjectName(QStringLiteral("radioButton"));
+        rbKobbelt = new QRadioButton(groupRotation);
+        rbKobbelt->setObjectName(QStringLiteral("rbKobbelt"));
 
-        gridLayout_3->addWidget(radioButton, 2, 0, 1, 1);
+        gridLayout_3->addWidget(rbKobbelt, 2, 0, 1, 1);
 
-        rbRotObj = new QRadioButton(groupRotation);
-        rbRotObj->setObjectName(QStringLiteral("rbRotObj"));
-        rbRotObj->setChecked(true);
+        rbCatmull = new QRadioButton(groupRotation);
+        rbCatmull->setObjectName(QStringLiteral("rbCatmull"));
+        rbCatmull->setChecked(true);
 
-        gridLayout_3->addWidget(rbRotObj, 0, 0, 1, 1);
+        gridLayout_3->addWidget(rbCatmull, 0, 0, 1, 1);
 
-        rbRotCam = new QRadioButton(groupRotation);
-        rbRotCam->setObjectName(QStringLiteral("rbRotCam"));
+        rbLoop = new QRadioButton(groupRotation);
+        rbLoop->setObjectName(QStringLiteral("rbLoop"));
 
-        gridLayout_3->addWidget(rbRotCam, 1, 0, 1, 1);
+        gridLayout_3->addWidget(rbLoop, 1, 0, 1, 1);
 
-        pushButton = new QPushButton(groupRotation);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        bGenerateCube = new QPushButton(groupRotation);
+        bGenerateCube->setObjectName(QStringLiteral("bGenerateCube"));
 
-        gridLayout_3->addWidget(pushButton, 1, 1, 1, 1);
+        gridLayout_3->addWidget(bGenerateCube, 1, 1, 1, 1);
 
-        pushButton_3 = new QPushButton(groupRotation);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+        bSubdivide = new QPushButton(groupRotation);
+        bSubdivide->setObjectName(QStringLiteral("bSubdivide"));
 
-        gridLayout_3->addWidget(pushButton_3, 2, 1, 1, 1);
+        gridLayout_3->addWidget(bSubdivide, 2, 1, 1, 1);
 
 
         verticalLayout_2->addWidget(groupRotation);
@@ -378,11 +378,11 @@ public:
         bResetData->setText(QApplication::translate("Maths5A_CoonsClass", "R\303\251initialiser les donn\303\251es", 0));
         laTimeCalcSurface->setText(QApplication::translate("Maths5A_CoonsClass", "0 us", 0));
         groupRotation->setTitle(QApplication::translate("Maths5A_CoonsClass", "Subdivision", 0));
-        radioButton->setText(QApplication::translate("Maths5A_CoonsClass", "Kobbelt", 0));
-        rbRotObj->setText(QApplication::translate("Maths5A_CoonsClass", "Catmull-Clark", 0));
-        rbRotCam->setText(QApplication::translate("Maths5A_CoonsClass", "Loop", 0));
-        pushButton->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Cube", 0));
-        pushButton_3->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
+        rbKobbelt->setText(QApplication::translate("Maths5A_CoonsClass", "Kobbelt", 0));
+        rbCatmull->setText(QApplication::translate("Maths5A_CoonsClass", "Catmull-Clark", 0));
+        rbLoop->setText(QApplication::translate("Maths5A_CoonsClass", "Loop", 0));
+        bGenerateCube->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Cube", 0));
+        bSubdivide->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
         cbShowWireframe->setText(QApplication::translate("Maths5A_CoonsClass", "Filaire", 0));
         cbShowTexture->setText(QApplication::translate("Maths5A_CoonsClass", "Texture", 0));
         cbShowPoints->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher les points", 0));

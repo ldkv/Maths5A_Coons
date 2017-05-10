@@ -10,6 +10,7 @@
 #include <vector>
 #include <math.h>
 #include "AlgoMath.h"
+#include "Subdivision_LoopKobbelt.h"
 
 using namespace std;
 
@@ -71,6 +72,8 @@ public slots:
 	void resetData();
 	// Réinitialiser le caméra à la vue par défaut
 	void resetCamera();
+	// Exécuter la subdivision
+	void subdivide();
 
 private:
 	// Fonction rendu de la scène
@@ -86,6 +89,12 @@ private:
 	void drawPointsMatrix(vector<vector<QVector3D>> pts, QVector3D color, int ptSize);
 	// Textures
 	void GLWidget::LoadGLTextures(const char * name);
+
+	// Subdivision Loop - Kobbelt
+	vector<Triangle*> ts; 
+	vector<Edge*> es;
+	vector<Vertex*> vs;
+	void drawMesh(vector<Triangle*>, vector<Edge*>, QVector3D, int);
 
 	// Ajout des points
 	QPoint mousePos;

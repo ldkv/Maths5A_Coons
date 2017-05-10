@@ -29,6 +29,10 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	connect(ui.spinJoinOrder, SIGNAL(valueChanged(int)), glScene, SLOT(setJoinOrder(int)));
 	connect(ui.bJoin, SIGNAL(clicked()), glScene, SLOT(generateJoinPatch()));
 	connect(ui.bCancelJoin, SIGNAL(clicked()), glScene, SLOT(cancelJoin()));
+
+	// Interface de Subdivision
+	connect(ui.bSubdivide, SIGNAL(clicked()), glScene, SLOT(subdivide()));
+
 	// Interface lumières + traçage
 	connect(ui.cbShowWireframe, SIGNAL(stateChanged(int)), glScene, SLOT(setWireframe(int)));
 	connect(ui.cbShowPoints, SIGNAL(stateChanged(int)), glScene, SLOT(setShowPts(int)));
