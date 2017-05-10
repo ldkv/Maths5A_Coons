@@ -23,6 +23,8 @@ GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent), m_theta(180.0f), m_
 	lights[1].posLight = { -100, 150, 150 };
 	lights[1].iAmbiant = { 1.0,0.0,1.0 };
 	lights[1].iDiffuse = { 1.0,0.0,1.0 };
+
+	pointsChaikin.push_back(vector<QVector3D>());
 }
 
 // A la suppression du programme
@@ -122,6 +124,14 @@ void GLWidget::drawScene()
 		// Surbriller les points de raccordement
 		drawPoints(points, { 0, 1.0, 0 }, 10);
 	}
+	if (showLine) {
+		// Surbriller les lines
+		drawLines(points, { 0, 1.0, 0 }, 6);
+	}
+	if (showChaikin)
+	{
+		drawChaikinLine({ 0, 0, 1.0 }, 4);
+	}
 }
 
 void GLWidget::LoadGLTextures(const char * name)
@@ -191,6 +201,92 @@ void GLWidget::drawPoints(vector<QVector3D> pts, QVector3D color, int ptSize)
 	glEnd();
 }
 
+// Dessiner des lignes
+void GLWidget::drawLines(vector<QVector3D> pts, QVector3D color, int lineWidth) {
+	if (pts.size() == 0) return;
+	glVector3D(color, false);
+	glLineWidth(lineWidth);
+	for (size_t j = 0; j < chaikinMaxPointIndice.size() + 1; j++)
+	{
+			vector<QVector3D> ptsBase = pts;
+			if (chaikinMaxPointIndice.size() > 0) {
+				if (j < chaikinMaxPointIndice.size() && ptsBase[chaikinMaxPointIndice[j]] != ptsBase.back())
+					ptsBase.erase(ptsBase.begin() + chaikinMaxPointIndice[j] + 1, ptsBase.end());
+				if (j != 0)
+					ptsBase.erase(ptsBase.begin(), ptsBase.begin() + chaikinMaxPointIndice[j - 1] + 1);
+			}
+
+			if (ptsBase.size() > 1)
+			{
+				glBegin(GL_LINES);
+				for (int i = 0; i < ptsBase.size() - 1; i++) {
+					glVector3D(ptsBase[i], true);
+					glVector3D(ptsBase[i + 1], true);
+				}
+				glEnd();
+			}
+	}
+}
+
+void GLWidget::drawChaikinLine(QVector3D color, int lineWidth) {
+	int nbPoints = pointsChaikin.size();
+	if (nbPoints <= 0) return;
+
+	glVector3D(color, false);
+	glLineWidth(lineWidth);
+	for (size_t j = 0; j < pointsChaikin.size(); j++)
+	{
+		if (pointsChaikin[j].size() > 1) {
+			glBegin(GL_LINES);
+			for (int i = 0; i < pointsChaikin[j].size() - 1; i++) {
+				glVector3D(pointsChaikin[j][i], true);
+				glVector3D(pointsChaikin[j][i + 1], true);
+			}
+			glEnd();
+		}
+	}
+}
+
+vector<QVector3D> GLWidget::getChaikinPoints(vector<QVector3D> pts, int degree) {
+	vector<QVector3D> ptsChaikin = vector<QVector3D>();
+
+	if (pts.size() >= 2) {
+		vector<QVector3D> ptsBase = pts;
+		for (size_t j = 0; j < degree; j++)
+		{
+			for (size_t i = 0; i < ptsBase.size() - 1; i++)
+			{
+				QVector3D vectorTmp = (ptsBase[i + 1] - ptsBase[i]) / 4.0;
+				ptsChaikin.push_back(ptsBase[i] + vectorTmp);
+				ptsChaikin.push_back(ptsBase[i] + 3.0 * vectorTmp);
+			}
+
+			if (j != degree - 1)
+			{
+				ptsBase = ptsChaikin;
+				ptsChaikin.clear();
+			}
+		}
+	}
+	return ptsChaikin;
+}
+
+vector<vector<QVector3D>> GLWidget::getAllChaikinPoints(vector<QVector3D> pts, int degree) {
+	vector<vector<QVector3D>> ptsChaikin = vector<vector<QVector3D>>();
+
+	if (pts.size() >= 2 && degree > 0) {
+		for (size_t k = 0; k < chaikinMaxPointIndice.size(); k++)
+		{
+			ptsChaikin.push_back(vector<QVector3D >());
+			vector<QVector3D> ptsBase = pts;
+			int start = k <= 0 ? 0 : chaikinMaxPointIndice[k-1];
+			ptsBase.erase(pts.begin() + start, pts.begin() + chaikinMaxPointIndice[k]);
+			ptsChaikin[k] = getChaikinPoints(ptsBase, degree);
+		}
+	}
+	return ptsChaikin;
+}
+
 // Dessiner d'un réseau des points
 void GLWidget::drawPointsMatrix(vector<vector<QVector3D>> pts, QVector3D color, int ptSize)
 {
@@ -214,6 +310,17 @@ QVector3D GLWidget::convertXY(int X, int Y)
 	return QVector3D((int)((double)X * 2.0 * rangeS * m_aspectRatio / screenW - rangeS * m_aspectRatio), (int)((double)Y * 2.0 * rangeS / screenH - rangeS), 0);
 }
 
+QVector3D GLWidget::rotateXY(QVector3D tmp)
+{
+	QQuaternion quat1 = QQuaternion::fromAxisAndAngle(QVector3D(1.0, 0.0, 0.0), 180 - m_theta);
+	QQuaternion quat2 = QQuaternion::fromAxisAndAngle(QVector3D(0.0, 0.0, 1.0), -m_phi);
+	quat1.normalize();
+	quat2.normalize();
+	tmp = quat1.rotatedVector(tmp);
+	tmp = quat2.rotatedVector(tmp);
+	return tmp;
+}
+
 // Callback pour les click de la souris
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
@@ -223,7 +330,17 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 	{
 		if (pointSelected == -1)
 		{
-			points.push_back(QVector3D(convertXY(event->pos().x(), event->pos().y())));
+			QVector3D tmp = QVector3D(convertXY(event->pos().x(), event->pos().y()));
+			tmp = rotateXY(tmp);
+			points.push_back(tmp);
+			
+			vector<QVector3D> ptsBase = points;
+			if (chaikinMaxPointIndice.size() > 0)
+				ptsBase.erase(ptsBase.begin(), ptsBase.begin() + chaikinMaxPointIndice[chaikinMaxPointIndice.size() - 1] + 1);
+
+			if (showChaikin) {
+				pointsChaikin[pointsChaikin.size() - 1] = getChaikinPoints(ptsBase, chaikinDegree);
+			}
 			needUpdate = true;
 		}
 	}
@@ -233,6 +350,8 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 		if (pointSelected != -1)
 		{
 			points.erase(points.begin() + pointSelected);
+			if (showChaikin)
+				pointsChaikin = getAllChaikinPoints(points, chaikinDegree);
 			needUpdate = true;
 		}
 	}
@@ -246,7 +365,11 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 	{
 		if (pointSelected >= 0)
 		{
-			points[pointSelected] = convertXY(event->pos().x(), event->pos().y());
+			QVector3D tmp = QVector3D(convertXY(event->pos().x(), event->pos().y()));
+			tmp = rotateXY(tmp);
+			points[pointSelected] = tmp;
+			if (showChaikin)
+				pointsChaikin = getAllChaikinPoints(points, chaikinDegree);
 			needUpdate = true;
 		}
 	}
@@ -267,8 +390,10 @@ int GLWidget::findNearestPoint(QPoint p)
 	int nbPoints = points.size();
 	for (int i = 0; i < nbPoints; i++)
 	{
-		QVector3D d = convertXY(p.x(), p.y()) - points[i];
-		if (sqrt(pow(d.x(), 2) + pow(d.y(), 2) <= POINT_SIZE * 4))
+		QVector3D tmp = QVector3D(convertXY(p.x(), p.y()));
+		tmp = rotateXY(tmp);
+		tmp -= points[i];
+		if (tmp.length() <= POINT_SIZE / 2)
 			return i;
 	}
 	return -1;
@@ -336,6 +461,14 @@ void GLWidget::keyPressEvent(QKeyEvent* e)
 	case Qt::Key_Down:
 		m_theta -= 2.0f;
 		break;
+	case Qt::Key_Return:
+		// verification pour éviter d'incérer un doublon
+		if (chaikinMaxPointIndice.size() == 0 || chaikinMaxPointIndice[chaikinMaxPointIndice.size() - 1] != points.size() - 1)
+		{
+			chaikinMaxPointIndice.push_back(points.size()-1);
+			pointsChaikin.push_back(vector<QVector3D>());
+		}
+		break;
 	default:
 		break;
 	}
@@ -377,6 +510,9 @@ void GLWidget::resetCamera()
 void GLWidget::resetData()
 {
 	points.clear();
+	pointsChaikin.clear();
+	pointsChaikin.push_back(vector<QVector3D>());
+	chaikinMaxPointIndice.clear();
 	degU = 0;
 	degV = 0;
 }
