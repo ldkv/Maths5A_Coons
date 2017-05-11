@@ -31,10 +31,10 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	connect(ui.bCancelJoin, SIGNAL(clicked()), glScene, SLOT(cancelJoin()));
 
 	// Interface de Subdivision
-	//connect(ui.bSubdivide, SIGNAL(clicked()), glScene, SLOT(subdivide()));
+	connect(ui.bSubdivide, SIGNAL(clicked()), glScene, SLOT(subdivide()));
 
 	// Interface lumières + traçage
-	//connect(ui.cbShowWireframe, SIGNAL(stateChanged(int)), glScene, SLOT(setWireframe(int)));
+	connect(ui.cbShowWireframe, SIGNAL(stateChanged(int)), glScene, SLOT(setWireframe(int)));
 	connect(ui.cbShowPoints, SIGNAL(stateChanged(int)), glScene, SLOT(setShowPts(int)));
 	connect(ui.cbShowGrid, SIGNAL(stateChanged(int)), glScene, SLOT(setGrid(int)));
 	connect(ui.cbShowTexture, SIGNAL(stateChanged(int)), glScene, SLOT(setShowTexture(int)));
@@ -64,7 +64,9 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	bGroup->addButton(ui.bColorS2, 1);
 	bGroup->addButton(ui.bColorObj, 2);
 	connect(bGroup, SIGNAL(buttonClicked(int)), this, SLOT(setColor(int)));
-
+	// Rotation Quaternion
+	connect(ui.rbRotObj, SIGNAL(clicked()), this, SLOT(setModeRotation()));
+	connect(ui.rbRotCam, SIGNAL(clicked()), this, SLOT(setModeRotation()));
 	// Signal depuis le GLWidget
 	connect(glScene, SIGNAL(labelChanged()), this, SLOT(updateLabelTimer()));
 	connect(glScene, SIGNAL(mouseMoved()), this, SLOT(updateStatus()));
