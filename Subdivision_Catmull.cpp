@@ -5,211 +5,6 @@
 #include <QDebug>
 #include <algorithm>  
 
-void resetGlobalID()
-{
-	globalId = 0;
-	globalSideId = 0;
-	globalFaceId = 0;
-}
-
-Point getPointfromID(vector<Point> pts, int id)
-{
-	for (int i = 0; i < pts.size(); i++)
-	{
-		if (pts[i].id == id)
-			return pts[i];
-	}
-	return Point();	// id = -1 => condition pour vérifier si on a bien trouvé id désiré
-}
-
-Side getSidefromID(vector<Side> sds, int id)
-{
-	for (int i = 0; i < sds.size(); i++)
-	{
-		if (sds[i].id == id)
-			return sds[i];
-	}
-	return Side(); // id = -1 => condition pour vérifier si on a bien trouvé id désiré
-}
-
-Face getFacefromID(vector<Face> faces, int id)
-{
-	for (int i = 0; i < faces.size(); i++)
-	{
-		if (faces[i].id == id)
-			return faces[i];
-	}
-	return Face();	// id = -1 => condition pour vérifier si on a bien trouvé id désiré
-}
-
-void deleteSidefromID(int id, vector<Side> &sds, vector<Point> &pts)
-{
-	for (int i = 0; i < sds.size(); i++)
-	{
-		if (sds[i].id == id)
-		{
-			deleteSidefromPoint(pts, sds[i].id, sds[i].pLow);
-			deleteSidefromPoint(pts, sds[i].id, sds[i].pHigh);
-			sds.erase(sds.begin() + i);
-			break;
-		}
-	}
-}
-
-void deleteSidefromPoint(vector<Point> &pts, int sideID, int pointID)
-{
-	for (int i = 0; i < pts.size(); i++)
-	{
-		if (pts[i].id == pointID)
-		{
-			for (int j = 0; j < pts[i].sides.size(); j++)
-			{
-				if (pts[i].sides[j] == sideID)
-				{
-					pts[i].sides.erase(pts[i].sides.begin() + j);
-					break;
-				}
-			}
-			break;
-		}
-	}
-}
-
-void deleteFacefromSide(vector<Side> &sides, int sideID, int faceID)
-{
-	for (int i = 0; i < sides.size(); i++)
-	{
-		if (sides[i].id == sideID)
-		{
-			if (sides[i].fLeft == faceID)
-				sides[i].fLeft = sides[i].fRight;
-			sides[i].fRight = -1;
-			break;
-		}
-	}
-}
-
-
-/*int addFace(int id1, int id2, int id3, vector<Face> &faces, vector<Side> &sides)
-{
-	faces.push_back(Face(id1, id2, id3));
-	int newFaceID = faces[faces.size() - 1].id;
-	for (int i = 0; i < sides.size(); i++)
-	{
-		if (sides[i].id == id1 || sides[i].id == id2 || sides[i].id == id3)
-		{
-			if (sides[i].fLeft == -1)
-				sides[i].fLeft = newFaceID;
-			else
-				sides[i].fRight = newFaceID;
-		}
-	}
-	return newFaceID;
-}*/
-
-void addSidetoPoint(vector<Point> &pts, int ptID, int sideID)
-{
-	for (int i = 0; i < pts.size(); i++)
-		if (pts[i].id == ptID)
-		{
-			pts[i].sides.push_back(sideID);
-			break;
-		}
-}
-
-void removeSidefromPoint(vector<Point> &pts, int ptID, int sideID)
-{
-	for (int i = 0; i < pts.size(); i++)
-		if (pts[i].id == ptID)
-		{
-			int k = 0;
-			while (k++ < pts[i].sides.size() && pts[i].sides[k] != sideID);
-			if (k < pts[i].sides.size())
-				pts[i].sides.erase(pts[i].sides.begin() + k);
-			break;
-		}
-}
-
-// Chercher les arêtes incidentes depuis le point P
-vector<Side> getIncidentEdgesOriented(Point P, vector<Side> sides, vector<Point> pts)
-{
-	vector<Side> edges;
-	// Chercher une arête incidente externe depuis P
-	for (int i = 0; i < P.sides.size(); i++)
-	{
-		if (getSidefromID(sides, P.sides[i]).fRight == -1)
-		{
-			// Echanger la place de cette arête au début
-			int temp = P.sides[0];
-			P.sides[0] = P.sides[i];
-			P.sides[i] = temp;
-			break;
-		}
-	}
-	// La première arête sera choisie pour la référence de calcul des angles
-	Side a = getSidefromID(sides, P.sides[0]);
-	Point Q = getPointfromID(pts, a.pHigh == P.id ? a.pLow : a.pHigh);
-	QLineF v(P.coord.x(), P.coord.y(), Q.coord.x(), Q.coord.y());
-	vector<qreal> angles;
-	angles.push_back(0);
-	edges.push_back(a);
-
-	for (int i = 1; i < P.sides.size(); i++)
-	{
-		a = getSidefromID(sides, P.sides[i]);
-		Q = getPointfromID(pts, a.pHigh == P.id ? a.pLow : a.pHigh);
-		QLineF PQ(P.coord.x(), P.coord.y(), Q.coord.x(), Q.coord.y());
-		qreal angle = v.angleTo(PQ);
-		int k = 0;
-		for (k = 0; k < angles.size(); k++)
-			if (angle <= angles[k])
-				break;
-		angles.insert(angles.begin() + k, angle);
-		edges.insert(edges.begin() + k, a);
-	}
-	return edges;
-}
-
-int getSideIDfromPoints(vector<Side> sides, int p1, int p2)
-{
-	for (int i = 0; i < sides.size(); i++)
-		if ((sides[i].pLow == p1 && sides[i].pHigh == p2) || (sides[i].pLow == p2 && sides[i].pHigh == p1))
-			return sides[i].id;
-	return -1;
-}
-
-int addSide(int p1, int p2, vector<Side> &sides, vector<Point> &pts)
-{
-	if (getSideIDfromPoints(sides, p1, p2) >= 0)
-		return -1;
-	sides.push_back(Side(p1, p2));
-	int id = sides[sides.size() - 1].id;
-	for (int i = 0; i < pts.size(); i++)
-		if (pts[i].id == p1 || pts[i].id == p2)
-			pts[i].sides.push_back(id);
-	return id;
-}
-
-int getSideIDFromPoints(vector<Side> s, Point x, Point y) {
-	for (int i = 0; i < s.size(); i++)
-	{
-		if ((s[i].pLow == x.id && s[i].pHigh == y.id) || (s[i].pHigh == x.id && s[i].pLow == y.id)) {
-			return s[i].id;
-		}
-	}
-	return -1;
-}
-
-int getPointIndex(vector<Point> pts, int id) {
-	for (int i = 0; i < pts.size(); i++)
-	{
-		if (pts[i].id == id) {
-			return i;
-		}
-	}
-	return -1;
-}
-
 Point computeBarycenter(vector<Point> points)
 {
 	Point bary(QVector3D(0, 0, 0));
@@ -227,7 +22,6 @@ Point computeBarycenter(vector<Point> points)
 
 	return bary;
 }
-
 
 vector<Face> getIncedentFaces(Face face, vector<Face> faces, int currentFace) {
 	vector<Face> incidentFaces;
@@ -291,6 +85,16 @@ bool isInFaceVector(vector<Face> faces, Face face) {
 	return false;
 }
 
+bool isInPointVector(vector<Point> points, Point point) {
+	for (size_t i = 0; i < points.size(); i++)
+	{
+		if (point == points[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
 vector<Side> incidentEdgesToPoint(vector<Side> sides, Point point) {
 	vector<Side> resultSides;
 	for (size_t i = 0; i < sides.size(); i++)
@@ -315,18 +119,17 @@ Point computeVertexPoint(vector<Side> sides) {
 	return computeBarycenter(tmpPoints);
 }
 
-vector<Face> subdivide(vector<Face> faces) {
+// Fonction de subdivision
+vector<Face> subdivide(vector<Face> faces, int sizex, int sizey) {
+	// Résultat de la subdivision
 	vector<Face> resultFaces;
 
+	// Detection des points et des segments exterieurs (pour mesh ouvert)
+	vector<Point> externPoints;
+	vector<Side> externSides;
 	for (size_t i = 0; i < faces.size(); i++)
 	{
-		vector<Point> facePoints;
-		vector<Point> edgePoints;
-		Point currentFacePoint;
-		vector<Point> vertexPoints;
-
-		currentFacePoint = computeBarycenter(faces[i].points);
-		vector<Face> incidentFaces;// getIncedentFaces(faces[i], faces, i);
+		// Toutes les faces sauf celle en cours
 		vector<Face> tmpFaceWithoutCurrent;
 		for (size_t j = 0; j < faces.size(); j++)
 		{
@@ -334,20 +137,63 @@ vector<Face> subdivide(vector<Face> faces) {
 		}
 		for (size_t j = 0; j < faces[i].sides.size(); j++)
 		{
+			// Si on a pas de face en commun avec un coté
 			Face f = getIncedentFace(faces[i].sides[j], tmpFaceWithoutCurrent);
-			if(f.points.size() != 0)
-				incidentFaces.push_back(f);
+			if (f.points.size() == 0) {
+				if(!isInPointVector(externPoints, faces[i].sides[j].points[0]))
+				externPoints.push_back(faces[i].sides[j].points[0]);
+				if (!isInPointVector(externPoints, faces[i].sides[j].points[1]))
+				externPoints.push_back(faces[i].sides[j].points[1]);
+				externSides.push_back(faces[i].sides[j]);
+			}
 		}
-		for (size_t j = 0; j < incidentFaces.size(); j++)
+	}
+
+	//int indexPass = sizex;
+	// Pour chaque face
+	for (size_t i = 0; i < faces.size(); i++)
+	{
+		/*if (i<sizex || i == indexPass || i == indexPass + sizex - 1 || i >= faces.size() - sizex) {
+			if (i == indexPass + sizex - 1) {
+				indexPass += sizex;
+			}
+
+		}*/
+
+		vector<Point> facePoints;
+		vector<Point> edgePoints;
+		Point currentFacePoint;
+		vector<Point> vertexPoints;
+
+		// Barycentre de la face en cours
+		currentFacePoint = computeBarycenter(faces[i].points);
+
+		// Calcul des faces incidentes et edges sans incidences
+		vector<Face> incidentFaces;// getIncedentFaces(faces[i], faces, i);
+		vector<Face> tmpFaceWithoutCurrent;
+		vector<int> indexEdgeWithNoFaceIncedent;
+		for (size_t j = 0; j < faces.size(); j++)
 		{
-			//Point tmpBary = computeBarycenter(incidentFaces[j].points);
-			facePoints.push_back(incidentFaces[j].barycenter);
-			vector<Point> tmpPoints = { currentFacePoint , faces[i].sides[j].points[0], incidentFaces[j].barycenter, faces[i].sides[j].points[1] };
-			edgePoints.push_back(computeBarycenter(tmpPoints));
+			if (i != j) tmpFaceWithoutCurrent.push_back(faces[j]);
+		}
+		for (size_t j = 0; j < faces[i].sides.size(); j++)
+		{
+			Face f = getIncedentFace(faces[i].sides[j], tmpFaceWithoutCurrent);
+			if (f.points.size() != 0) {
+				incidentFaces.push_back(f);
+			}
+			else
+			{
+				vector<Point> tmpPoints = { faces[i].sides[j].points[0], faces[i].sides[j].points[1], faces[i].sides[j].points[0], faces[i].sides[j].points[1] };
+				incidentFaces.push_back(Face(tmpPoints));
+				indexEdgeWithNoFaceIncedent.push_back(j);
+			}
 		}
 
+		// Vertex points
 		for (size_t j = 0; j < faces[i].points.size(); j++)
 		{
+			// Points qui ont une face incidente
 			vector<Face> incidentFacesPoint;
 			vector<Face> FaceWithPointInCommon = getFacesWithAPoint(faces[i].points[j], faces);
 			for (size_t k = 0; k < FaceWithPointInCommon.size(); k++)
@@ -376,10 +222,96 @@ vector<Face> subdivide(vector<Face> faces) {
 			}
 			R = computeVertexPoint(incidentEdgesToPoint(tmpSides, faces[i].points[j]));
 
-			vertexPoints.push_back(Point((Q.coord / n) + ((2 / n) * R.coord) + (((n - 3) / n) * faces[i].points[j].coord)));
+			// Est ce que on est dans le cas d'un point mesh ouvert ?
+			bool notSpecial = true;
+			/*for (size_t k = 0; k < indexEdgeWithNoFaceIncedent.size(); k++)
+			{
+				if (faces[i].points[j] == faces[i].sides[k].points[0] || faces[i].points[j] == faces[i].sides[k].points[1]) {
+					notSpecial = false;
+				}
+			}*/
+			for (size_t k = 0; k < externPoints.size(); k++)
+			{
+				if (faces[i].points[j] == externPoints[k]) {
+				notSpecial = false;
+				}
+			}
+			if (notSpecial) {
+				vertexPoints.push_back(Point((Q.coord / n) + ((2 / n) * R.coord) + (((n - 3) / n) * faces[i].points[j].coord)));
+			}
+			else
+			{
+				// Si mesh ouvert
+				Point p1, p2, p3 = faces[i].points[j];
+				bool p1b = false, p2b = false;
+				for (size_t i = 0; i < externSides.size(); i++)
+				{
+					if (p3 == externSides[i].points[0] && p2 != externSides[i].points[1] && !p1b) {
+						p1 = externSides[i].points[1];
+						p1b = true;
+					}
+					if (p3 == externSides[i].points[1] && p2 != externSides[i].points[0] && !p1b) {
+						p1 = externSides[i].points[0];
+						p1b = true;
+					}
+					if (p3 == externSides[i].points[0] && p1 != externSides[i].points[1] && !p2b) {
+						p2 = externSides[i].points[1];
+						p2b = true;
+					}
+					if (p3 == externSides[i].points[1] && p1 != externSides[i].points[0] && !p2b) {
+						p2 = externSides[i].points[0];
+						p2b = true;
+					}
+				}
+				vertexPoints.push_back(Point(6.0 / 8.0 * p3.coord + p1.coord/8 + p2.coord/8));
+			}
+		}
+
+		// Edge Points
+		for (size_t j = 0; j < incidentFaces.size(); j++)
+		{
+			//Point tmpBary = computeBarycenter(incidentFaces[j].points);
+			facePoints.push_back(incidentFaces[j].barycenter);
+			bool istrue = true;
+			for (size_t k = 0; k < indexEdgeWithNoFaceIncedent.size(); k++)
+			{
+				if (j == indexEdgeWithNoFaceIncedent[k]) {
+					istrue = false;
+				}
+			}
+			if (istrue) {
+				vector<Point> tmpPoints;
+				tmpPoints = { currentFacePoint , faces[i].sides[j].points[0], incidentFaces[j].barycenter, faces[i].sides[j].points[1] };
+				edgePoints.push_back(computeBarycenter(tmpPoints));
+			}
+			else
+			{
+				// Avec points perturbés
+				bool notSpecial = true;
+				for (size_t k = 0; k < externPoints.size(); k++)
+				{
+					if (faces[i].points[j] == externPoints[k]) {
+						notSpecial = false;
+					}
+				}
+				vector<Point> tmpPoints;
+				if(j < incidentFaces.size() - 1) {
+					tmpPoints = { vertexPoints[j],  vertexPoints[j + 1] };
+				}
+				else
+				{
+					tmpPoints = { vertexPoints[0],  vertexPoints[j] };
+				}
+				//edgePoints.push_back(computeBarycenter(tmpPoints));
+				////////
+
+				// Sans points perturbés
+				edgePoints.push_back(incidentFaces[j].barycenter);
+			}
 		}
 		
-		for (size_t j = 0; j < faces[i].points.size() -1; j++)
+		// Création des faces
+		for (size_t j = 0; j < incidentFaces.size() -1; j++)
 		{
 			vector<Point> tmpPoints;
 			tmpPoints.push_back(currentFacePoint);
@@ -388,9 +320,10 @@ vector<Face> subdivide(vector<Face> faces) {
 			tmpPoints.push_back(edgePoints[j + 1]);
 			resultFaces.push_back(Face(tmpPoints));
 		}
+		// Créattion de la dernière face
 		vector<Point> tmpPoints;
 		tmpPoints.push_back(currentFacePoint);
-		tmpPoints.push_back(edgePoints[faces[i].points.size() - 1]);
+		tmpPoints.push_back(edgePoints[incidentFaces.size() - 1]);
 		tmpPoints.push_back(vertexPoints[0]);
 		tmpPoints.push_back(edgePoints[0]);
 		resultFaces.push_back(Face(tmpPoints));

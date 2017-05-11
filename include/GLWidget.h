@@ -87,6 +87,7 @@ private:
 	void drawPointsMatrix(vector<vector<QVector3D>> pts, QVector3D color, int ptSize);
 	// Textures
 	void GLWidget::LoadGLTextures(const char * name);
+	void generateControlPoints();
 
 	// Ajout des points
 	QPoint mousePos;
@@ -126,11 +127,11 @@ private:
 	// Les paramètres de l'UI
 	int modeGenPts = 2;		// 1 pour Aléatoire, 2 pour réglage de l'hauteur
 	int modeRotation = 0;	// 0 pour Objet, 1 pour Caméra
-	int degU = 0;
-	int degV = 0;
+	int degU =5;
+	int degV = 5;
 	int precision = 10;
 	int joinOrder = 0;		// Raccordement 0-2
-	int depthBetweenPoints = 0;
+	int depthBetweenPoints = 4;
 	bool showWireframe = false;
 	bool showPts = true;
 	bool showGrid = false;

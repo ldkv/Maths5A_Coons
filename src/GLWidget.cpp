@@ -42,6 +42,9 @@ vector<Point> cubePoints;
 vector<Face> cubeFaces;
 vector<int> cubeIndices;
 vector<Face> dividedCube;
+vector<Point> ptsControl;
+vector<Face> meshFaces;
+vector<QVector3D> controlPoints;
 
 // Initialisation du module OpenGL
 void GLWidget::initializeGL()
@@ -62,10 +65,13 @@ void GLWidget::initializeGL()
 	// Chargement de la texture
 	LoadGLTextures("texture.jpg");
 
+	generateControlPoints();
 	createCube();
-	dividedCube = subdivide(cubeFaces);
+	//dividedCube = subdivide(cubeFaces);
 	//dividedCube = subdivide(dividedCube);
 	//dividedCube = subdivide(dividedCube);
+	//meshFaces = subdivide(meshFaces);
+	//meshFaces = subdivide(meshFaces);
 }
 
 // Redimensionner de la scène pour adapter à la fenêtre principale
@@ -134,8 +140,78 @@ void GLWidget::drawScene()
 		drawPoints(points, { 0, 1.0, 0 }, 10);
 	}
 
-	drawFaces(cubeFaces);
-	drawFaces(dividedCube);
+	//drawFaces(cubeFaces);
+	//drawFaces(dividedCube);
+	//drawFaces(meshFaces);
+	//drawPoints(controlPoints, { 0, 1.0, 0 }, 10);
+}
+
+// Generation des points de controle
+void GLWidget::generateControlPoints()
+{
+	// Si l'utilisateur n'a pas changé les valeurs minimales
+	if (precision < 2 || degU < 2 || degV < 2)
+		return;
+
+	// Sinon, on efface les valeurs actuels des taleaux
+	ptsControl.clear();
+	//ptsJoin.clear();
+	//ptsHighlighted.clear();
+
+	//ptsControl.resize(degU);
+	int x, y, z, zx, zy;
+
+	// On fonction du style de genration de points que l'on souhaite obtenir
+
+		x = -degU / 2 * 20;
+		y = -degV / 2 * 20;
+		zx = 0;
+		zy = 0;
+		// Pour chacune des valeurs de nos axes
+		for (int i = 0; i < degU; i++)
+		{
+			for (int j = 0; j < degV; j++)
+			{
+				// On rajoute le point au tableau de points de controle
+				ptsControl.push_back(Point(QVector3D(x, y, zy)));
+				controlPoints.push_back(QVector3D(x, y, zy));
+				y += 20;
+				if (j < degV / 2)
+					zy += 5 * depthBetweenPoints;
+				else
+					zy -= 5 * depthBetweenPoints;
+			}
+			y = -degV / 2 * 20;
+			x += 20;
+			if (i < degU / 2)
+				zx += 5 * depthBetweenPoints;
+			else
+				zx -= 5 * depthBetweenPoints;
+			zy = zx;
+		}
+
+		vector<Point> tmpPoints;
+		int indexPass = degU - 1;
+		for (size_t i = 0; i < (degU)*(degV)-degU; i++){
+			if (i == indexPass) {
+				indexPass+= degU;
+			}
+			else
+			{
+				tmpPoints.clear();
+				tmpPoints.push_back(ptsControl[i]);
+				tmpPoints.push_back(ptsControl[i + 1]);
+				tmpPoints.push_back(ptsControl[i + degU + 1]);
+				tmpPoints.push_back(ptsControl[i + degU]);
+				meshFaces.push_back(tmpPoints);
+			}
+		}
+		/*tmpPoints.clear();
+		tmpPoints.push_back(ptsControl[(degU - 1)*(degV - 1) - 2]);
+		tmpPoints.push_back(ptsControl[(degU - 1)*(degV - 1) - 2]);
+		tmpPoints.push_back(ptsControl[0]);
+		tmpPoints.push_back(ptsControl[0 + 1]);
+		meshFaces.push_back(tmpPoints);*/
 }
 
 void GLWidget::LoadGLTextures(const char * name)
@@ -433,9 +509,17 @@ void GLWidget::createCube() {
 	cubeFaces.push_back(tmp);
 	tmp = { QVector3D(-50, 50, 50), QVector3D(50, 50, 50), QVector3D(50, -50, 50), QVector3D(-50, -50, 50) };
 	cubeFaces.push_back(tmp);
-	tmp = { QVector3D(-50, 50, -50), QVector3D(-50, 50, 50), QVector3D(50, 50, 50), QVector3D(50, 50, -50) };
+	//tmp = { QVector3D(-50, 50, -50), QVector3D(-50, 50, 50), QVector3D(50, 50, 50), QVector3D(50, 50, -50) };
+	tmp = { QVector3D(-50, 50, 50), QVector3D(50, 50, 50),  QVector3D(50, 200, 0) };
 	cubeFaces.push_back(tmp);
-	tmp = { QVector3D(50, 50, -50), QVector3D(50, 50, 50), QVector3D(50, -50, 50), QVector3D(50, -50, -50) };
+	// Null
+	tmp = { QVector3D(-50, 50, 50),  QVector3D(50, 200, 0), QVector3D(-50, 50, -50), };
+	cubeFaces.push_back(tmp);
+	// Null
+	tmp = { QVector3D(-50, 50, -50), QVector3D(50, 200, 0), QVector3D(50, 50, -50) };
+	cubeFaces.push_back(tmp);
+	//tmp = { QVector3D(50, 50, -50), QVector3D(50, 50, 50), QVector3D(50, -50, 50), QVector3D(50, -50, -50) };
+	tmp = { QVector3D(50, 50, -50), QVector3D(50, 200, 0), QVector3D(50, 50, 50), QVector3D(50, -50, 50),  QVector3D(50, -50, -50) };
 	cubeFaces.push_back(tmp);
 }
 
