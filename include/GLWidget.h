@@ -10,6 +10,7 @@
 #include <vector>
 #include <math.h>
 #include "AlgoMath.h"
+#include "Subdivision_LoopKobbelt.h"
 
 using namespace std;
 
@@ -71,12 +72,16 @@ public slots:
 	void resetData();
 	// Réinitialiser le caméra à la vue par défaut
 	void resetCamera();
+	// Exécuter la subdivision
+	void subdivide();
 
 private:
 	// Fonction rendu de la scène
 	void drawScene();
 	// Conversion de coordonnées d'écran à coordonnées de la scène OPENGL
 	QVector3D convertXY(int X, int Y);
+	// Rotation du point dans l'espace 3D
+	QVector3D GLWidget::rotateXY(QVector3D tmp);
 	// Dessiner la grille et les axes
 	void drawGridandAxes();
 	// Chercher du point (dans la nuage existante) la plus proche de la souris
@@ -84,12 +89,26 @@ private:
 	// Dessiner des points
 	void drawPoints(vector<QVector3D> points, QVector3D color, int ptSize);
 	void drawPointsMatrix(vector<vector<QVector3D>> pts, QVector3D color, int ptSize);
+	// Dessine des lignes
+	void drawLines(vector<QVector3D> pts, QVector3D color, int lineWidth);
+	void GLWidget::drawChaikinLine(QVector3D color, int lineWidth);
+	// update chaikin points
+	vector<QVector3D> getChaikinPoints(vector<QVector3D> pts, int degree);
+	vector<vector<QVector3D>> getAllChaikinPoints(vector<QVector3D> pts, int degree);
 	// Textures
 	void GLWidget::LoadGLTextures(const char * name);
+
+	// Subdivision Loop - Kobbelt
+	vector<Triangle*> ts; 
+	vector<Edge*> es;
+	vector<Vertex*> vs;
+	void drawMesh(vector<Triangle*>, vector<Edge*>, QVector3D, int);
 
 	// Ajout des points
 	QPoint mousePos;
 	vector<QVector3D> points;
+	vector<vector<QVector3D>> pointsChaikin;
+	vector<int> chaikinMaxPointIndice;
 	int pointSelected = -1;
 	bool needUpdate = false;
 
@@ -132,6 +151,9 @@ private:
 	int depthBetweenPoints = 0;
 	bool showWireframe = false;
 	bool showPts = true;
+	bool showLine = true;
+	bool showChaikin = true;
+	int chaikinDegree = 3;
 	bool showGrid = false;
 	bool showTexture = false;
 	bool showLight1 = false;
