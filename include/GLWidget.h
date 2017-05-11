@@ -60,6 +60,8 @@ signals:
 
 public slots:
 	void timeOutSlot();
+	void setDegreeU(int m) { degU = m; generateControlPoints(); }
+	void setDegreeV(int n) { degV = n; generateControlPoints(); }
 	void setJoinOrder(int j) { joinOrder = j; }
 	void setGrid(int g) { showGrid = g == 0 ? false : true; }
 	void setShowPts(int s) { showPts = s == 0 ? false : true; }

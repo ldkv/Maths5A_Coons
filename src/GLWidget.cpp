@@ -147,8 +147,11 @@ void GLWidget::drawScene()
 
 	//drawFaces(cubeFaces);
 	//drawFaces(dividedCube);
-	//drawMesh(dividedCube);
-	//drawFaces(meshFaces);
+	//
+	drawFaces(meshFaces);
+	if (showTexture) {
+		drawMesh(meshFaces);
+	}
 	//drawPoints(controlPoints, { 0, 1.0, 0 }, 10);
 }
 
@@ -184,6 +187,8 @@ void GLWidget::drawMesh(vector<Triangle*> ts, vector<Edge*> es, QVector3D color,
 // Generation des points de controle
 void GLWidget::generateControlPoints()
 {
+	meshFaces.clear();
+
 	// Si l'utilisateur n'a pas changé les valeurs minimales
 	if (precision < 2 || degU < 2 || degV < 2)
 		return;
@@ -651,6 +656,17 @@ void GLWidget::keyPressEvent(QKeyEvent* e)
 			chaikinMaxPointIndice.push_back(points.size()-1);
 			pointsChaikin.push_back(vector<QVector3D>());
 		}
+		break;
+	case Qt::Key_Minus:
+		depthBetweenPoints -= 1;
+		generateControlPoints();
+		break;
+	case Qt::Key_Plus:
+		depthBetweenPoints += 1;
+		generateControlPoints();
+		break;
+	case Qt::Key_0:
+		meshFaces = subdivideC(meshFaces);
 		break;
 	default:
 		break;
