@@ -73,7 +73,7 @@ public:
     QGridLayout *gridLayout_3;
     QRadioButton *radioButton;
     QRadioButton *rbRotObj;
-    QPushButton *pushButton_3;
+    QPushButton *bSubdivide;
     QRadioButton *rbRotCam;
     QPushButton *pushButton;
     QCheckBox *cbShowWireframe;
@@ -278,10 +278,10 @@ public:
 
         gridLayout_3->addWidget(rbRotObj, 0, 0, 1, 1);
 
-        pushButton_3 = new QPushButton(groupRotation);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+        bSubdivide = new QPushButton(groupRotation);
+        bSubdivide->setObjectName(QStringLiteral("bSubdivide"));
 
-        gridLayout_3->addWidget(pushButton_3, 2, 1, 1, 1);
+        gridLayout_3->addWidget(bSubdivide, 2, 1, 1, 1);
 
         rbRotCam = new QRadioButton(groupRotation);
         rbRotCam->setObjectName(QStringLiteral("rbRotCam"));
@@ -431,7 +431,7 @@ public:
 
         retranslateUi(Maths5A_CoonsClass);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Maths5A_CoonsClass);
@@ -455,7 +455,7 @@ public:
         groupRotation->setTitle(QApplication::translate("Maths5A_CoonsClass", "Subdivision", 0));
         radioButton->setText(QApplication::translate("Maths5A_CoonsClass", "Kobbelt", 0));
         rbRotObj->setText(QApplication::translate("Maths5A_CoonsClass", "Catmull-Clark", 0));
-        pushButton_3->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
+        bSubdivide->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
         rbRotCam->setText(QApplication::translate("Maths5A_CoonsClass", "Loop", 0));
         pushButton->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Cube", 0));
         cbShowWireframe->setText(QApplication::translate("Maths5A_CoonsClass", "Filaire", 0));
