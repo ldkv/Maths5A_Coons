@@ -146,4 +146,5 @@ private:
 	void createCube();
 	void subcat();
 	void drawFaces(vector<Face> faces);
+	void drawMesh(vector<Face> faces);
 };

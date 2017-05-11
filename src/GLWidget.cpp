@@ -67,7 +67,7 @@ void GLWidget::initializeGL()
 
 	generateControlPoints();
 	createCube();
-	//dividedCube = subdivide(cubeFaces);
+	dividedCube = subdivide(cubeFaces);
 	//dividedCube = subdivide(dividedCube);
 	//dividedCube = subdivide(dividedCube);
 	//meshFaces = subdivide(meshFaces);
@@ -142,6 +142,7 @@ void GLWidget::drawScene()
 
 	//drawFaces(cubeFaces);
 	//drawFaces(dividedCube);
+	//drawMesh(dividedCube);
 	//drawFaces(meshFaces);
 	//drawPoints(controlPoints, { 0, 1.0, 0 }, 10);
 }
@@ -231,6 +232,47 @@ void GLWidget::LoadGLTextures(const char * name)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void GLWidget::drawMesh(vector<Face> faces)
+{
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+
+	for (int i = 0; i < faces.size(); i++)
+	{
+		//for (int j = 0; j <faces[i].points.size() - 3; j++)
+		//{
+			// Coordonnées des points avec coordonnées de la texture
+			//glBegin(GL_QUADS);
+			glBegin(GL_TRIANGLES);
+			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[0].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[2].coord, true);
+			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[1].coord, true);
+			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[0].coord, true);
+			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[3].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[2].coord, true);
+			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[0].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[1].coord, true);
+			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[2].coord, true);
+			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[0].coord, true);
+			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[2].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[3].coord, true);
+			/*glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[j].coord, true);
+			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[j+1].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[j+2].coord, true);
+			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[j+3].coord, true);
+			glEnd();
+			glBegin(GL_QUADS);
+			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[j].coord, true);
+			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[j + 3].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[j + 2].coord, true);
+			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[j + 1].coord, true);
+			*/
+			glEnd();
+		//}
+	}
+	glDisable(GL_TEXTURE_2D);
 }
 
 QVector3D GLWidget::processLighting(QVector3D p1Face, QVector3D p2Face, QVector3D p3Face, QVector3D p4Face, Light light) 
