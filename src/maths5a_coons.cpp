@@ -41,6 +41,10 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	connect(ui.bResetData, SIGNAL(clicked()), this, SLOT(resetData()));
 	connect(ui.bResetCam, SIGNAL(clicked()), glScene, SLOT(resetCamera()));
 	connect(ui.bQuit, SIGNAL(clicked()), this, SLOT(quit()));
+	//Chainkin
+	connect(ui.cbLine, SIGNAL(stateChanged(int)), this, SLOT(showLine()));
+	connect(ui.cbLineChainkin, SIGNAL(stateChanged(int)), this, SLOT(showLineChaikin()));
+	connect(ui.spinAngle, SIGNAL(valueChanged(int)), this, SLOT(setAngle()));
 	// Définir la couleur des boutons et leur signal
 	QColor col = convertColor(glScene->objectColor);
 	QString qss = QString("background-color: %1").arg(col.name());
@@ -120,6 +124,21 @@ void Maths5A_Coons::updateStatus()
 		.arg(glScene->mouseWorld.x())
 		.arg(glScene->mouseWorld.y())
 		));
+}
+
+void Maths5A_Coons::showLine()
+{
+	qDebug() << ui.cbLine->isChecked();
+}
+
+void Maths5A_Coons::showLineChaikin()
+{
+	qDebug() << ui.cbLineChainkin->isChecked();
+}
+
+void Maths5A_Coons::setAngle()
+{
+	qDebug() << ui.spinAngle->value();
 }
 
 // Quitter
