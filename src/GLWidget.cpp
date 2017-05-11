@@ -173,11 +173,11 @@ void GLWidget::drawMesh(vector<Triangle*> ts, vector<Edge*> es, QVector3D color,
 
 	if (showLine) {
 		// Surbriller les lines
-		drawLines(points, { 0, 1.0, 0 }, 6);
+		drawLines(points, { 0, 1.0, 0 }, 4);
 	}
 	if (showChaikin)
 	{
-		drawChaikinLine({ 0, 0, 1.0 }, 4);
+		drawChaikinLine({ 0.5f, 0.7f, 0.9f }, 4);
 	}
 }
 
@@ -754,6 +754,7 @@ void GLWidget::resetData()
 	pointsChaikin.clear();
 	pointsChaikin.push_back(vector<QVector3D>());
 	curveMaxPointIndice.clear();
+	coonCurveIndice.clear();
 	degU = 0;
 	degV = 0;
 }
