@@ -98,6 +98,7 @@ private:
 	// update chaikin points
 	vector<QVector3D> getChaikinPoints(vector<QVector3D> pts, int degree);
 	vector<vector<QVector3D>> getAllChaikinPoints(vector<QVector3D> pts, int degree);
+	vector<vector<QVector3D>> generateCoonsSurface(vector<QVector3D> curve1, vector<QVector3D> curve2, int degree);
 	// Textures
 	void GLWidget::LoadGLTextures(const char * name);
 	void generateControlPoints();
@@ -112,7 +113,8 @@ private:
 	QPoint mousePos;
 	vector<QVector3D> points;
 	vector<vector<QVector3D>> pointsChaikin;
-	vector<int> chaikinMaxPointIndice;
+	vector<int> curveMaxPointIndice;
+	vector<int> coonCurveIndice;
 	int pointSelected = -1;
 	bool needUpdate = false;
 
