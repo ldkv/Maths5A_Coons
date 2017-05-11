@@ -28,6 +28,7 @@
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -46,31 +47,35 @@ public:
     QDockWidget *dockWidget;
     QWidget *dockWidgetContents;
     QVBoxLayout *verticalLayout_2;
+    QTabWidget *tabWidget;
+    QWidget *tab;
+    QVBoxLayout *verticalLayout_3;
+    QVBoxLayout *verticalLayout;
     QGroupBox *groupMode;
     QGridLayout *gridLayout;
-    QSpinBox *spinPrecision;
     QRadioButton *rbAdjust;
+    QSpinBox *spinPrecision;
     QLabel *laHorizontal;
-    QLabel *label;
     QPushButton *bJoin;
-    QRadioButton *rbRandom;
+    QLabel *label;
     QLabel *laVertical;
     QPushButton *bCancelJoin;
-    QLabel *laPrecision;
-    QSpinBox *spinHori;
-    QSpinBox *spinVerti;
-    QSpinBox *spinJoinOrder;
     QFrame *line;
+    QSpinBox *spinHori;
+    QSpinBox *spinJoinOrder;
     QPushButton *bResetData;
+    QLabel *laPrecision;
+    QSpinBox *spinVerti;
     QFrame *line_2;
     QLabel *laTimeCalcSurface;
+    QRadioButton *rbRandom;
     QGroupBox *groupRotation;
     QGridLayout *gridLayout_3;
     QRadioButton *radioButton;
     QRadioButton *rbRotObj;
+    QPushButton *pushButton_3;
     QRadioButton *rbRotCam;
     QPushButton *pushButton;
-    QPushButton *pushButton_3;
     QCheckBox *cbShowWireframe;
     QCheckBox *cbShowTexture;
     QCheckBox *cbShowPoints;
@@ -84,6 +89,14 @@ public:
     QPushButton *bColorS2;
     QCheckBox *cbLight2;
     QPushButton *bColorObj;
+    QWidget *tab_2;
+    QVBoxLayout *verticalLayout_5;
+    QVBoxLayout *verticalLayout_4;
+    QGroupBox *groupBox;
+    QCheckBox *cbLine;
+    QCheckBox *cbLineChainkin;
+    QLabel *labelAngle;
+    QSpinBox *spinAngle;
     QSpacerItem *verticalSpacer;
     QPushButton *bResetCam;
     QPushButton *bQuit;
@@ -92,7 +105,7 @@ public:
     {
         if (Maths5A_CoonsClass->objectName().isEmpty())
             Maths5A_CoonsClass->setObjectName(QStringLiteral("Maths5A_CoonsClass"));
-        Maths5A_CoonsClass->resize(1129, 796);
+        Maths5A_CoonsClass->resize(1129, 823);
         centralWidget = new QWidget(Maths5A_CoonsClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayout_2 = new QHBoxLayout(centralWidget);
@@ -125,12 +138,35 @@ public:
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        groupMode = new QGroupBox(dockWidgetContents);
+        tabWidget = new QTabWidget(dockWidgetContents);
+        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(tabWidget->sizePolicy().hasHeightForWidth());
+        tabWidget->setSizePolicy(sizePolicy);
+        tabWidget->setMinimumSize(QSize(300, 0));
+        tab = new QWidget();
+        tab->setObjectName(QStringLiteral("tab"));
+        verticalLayout_3 = new QVBoxLayout(tab);
+        verticalLayout_3->setSpacing(6);
+        verticalLayout_3->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(6);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        groupMode = new QGroupBox(tab);
         groupMode->setObjectName(QStringLiteral("groupMode"));
         gridLayout = new QGridLayout(groupMode);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        rbAdjust = new QRadioButton(groupMode);
+        rbAdjust->setObjectName(QStringLiteral("rbAdjust"));
+        rbAdjust->setChecked(true);
+
+        gridLayout->addWidget(rbAdjust, 1, 1, 1, 1);
+
         spinPrecision = new QSpinBox(groupMode);
         spinPrecision->setObjectName(QStringLiteral("spinPrecision"));
         spinPrecision->setMinimum(2);
@@ -139,32 +175,20 @@ public:
 
         gridLayout->addWidget(spinPrecision, 6, 2, 1, 1);
 
-        rbAdjust = new QRadioButton(groupMode);
-        rbAdjust->setObjectName(QStringLiteral("rbAdjust"));
-        rbAdjust->setChecked(true);
-
-        gridLayout->addWidget(rbAdjust, 1, 1, 1, 1);
-
         laHorizontal = new QLabel(groupMode);
         laHorizontal->setObjectName(QStringLiteral("laHorizontal"));
 
         gridLayout->addWidget(laHorizontal, 2, 1, 1, 1);
-
-        label = new QLabel(groupMode);
-        label->setObjectName(QStringLiteral("label"));
-
-        gridLayout->addWidget(label, 9, 1, 1, 1);
 
         bJoin = new QPushButton(groupMode);
         bJoin->setObjectName(QStringLiteral("bJoin"));
 
         gridLayout->addWidget(bJoin, 11, 2, 1, 1);
 
-        rbRandom = new QRadioButton(groupMode);
-        rbRandom->setObjectName(QStringLiteral("rbRandom"));
-        rbRandom->setChecked(false);
+        label = new QLabel(groupMode);
+        label->setObjectName(QStringLiteral("label"));
 
-        gridLayout->addWidget(rbRandom, 0, 1, 1, 1);
+        gridLayout->addWidget(label, 9, 1, 1, 1);
 
         laVertical = new QLabel(groupMode);
         laVertical->setObjectName(QStringLiteral("laVertical"));
@@ -176,10 +200,12 @@ public:
 
         gridLayout->addWidget(bCancelJoin, 11, 1, 1, 1);
 
-        laPrecision = new QLabel(groupMode);
-        laPrecision->setObjectName(QStringLiteral("laPrecision"));
+        line = new QFrame(groupMode);
+        line->setObjectName(QStringLiteral("line"));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
 
-        gridLayout->addWidget(laPrecision, 6, 1, 1, 1);
+        gridLayout->addWidget(line, 8, 1, 1, 2);
 
         spinHori = new QSpinBox(groupMode);
         spinHori->setObjectName(QStringLiteral("spinHori"));
@@ -189,6 +215,22 @@ public:
 
         gridLayout->addWidget(spinHori, 2, 2, 1, 1);
 
+        spinJoinOrder = new QSpinBox(groupMode);
+        spinJoinOrder->setObjectName(QStringLiteral("spinJoinOrder"));
+        spinJoinOrder->setMaximum(2);
+
+        gridLayout->addWidget(spinJoinOrder, 9, 2, 1, 1);
+
+        bResetData = new QPushButton(groupMode);
+        bResetData->setObjectName(QStringLiteral("bResetData"));
+
+        gridLayout->addWidget(bResetData, 15, 1, 1, 2);
+
+        laPrecision = new QLabel(groupMode);
+        laPrecision->setObjectName(QStringLiteral("laPrecision"));
+
+        gridLayout->addWidget(laPrecision, 6, 1, 1, 1);
+
         spinVerti = new QSpinBox(groupMode);
         spinVerti->setObjectName(QStringLiteral("spinVerti"));
         spinVerti->setMinimum(0);
@@ -196,24 +238,6 @@ public:
         spinVerti->setValue(0);
 
         gridLayout->addWidget(spinVerti, 4, 2, 1, 1);
-
-        spinJoinOrder = new QSpinBox(groupMode);
-        spinJoinOrder->setObjectName(QStringLiteral("spinJoinOrder"));
-        spinJoinOrder->setMaximum(2);
-
-        gridLayout->addWidget(spinJoinOrder, 9, 2, 1, 1);
-
-        line = new QFrame(groupMode);
-        line->setObjectName(QStringLiteral("line"));
-        line->setFrameShape(QFrame::HLine);
-        line->setFrameShadow(QFrame::Sunken);
-
-        gridLayout->addWidget(line, 8, 1, 1, 2);
-
-        bResetData = new QPushButton(groupMode);
-        bResetData->setObjectName(QStringLiteral("bResetData"));
-
-        gridLayout->addWidget(bResetData, 15, 1, 1, 2);
 
         line_2 = new QFrame(groupMode);
         line_2->setObjectName(QStringLiteral("line_2"));
@@ -228,10 +252,16 @@ public:
 
         gridLayout->addWidget(laTimeCalcSurface, 14, 1, 1, 2);
 
+        rbRandom = new QRadioButton(groupMode);
+        rbRandom->setObjectName(QStringLiteral("rbRandom"));
+        rbRandom->setChecked(false);
 
-        verticalLayout_2->addWidget(groupMode);
+        gridLayout->addWidget(rbRandom, 0, 1, 1, 1);
 
-        groupRotation = new QGroupBox(dockWidgetContents);
+
+        verticalLayout->addWidget(groupMode);
+
+        groupRotation = new QGroupBox(tab);
         groupRotation->setObjectName(QStringLiteral("groupRotation"));
         gridLayout_3 = new QGridLayout(groupRotation);
         gridLayout_3->setSpacing(6);
@@ -248,6 +278,11 @@ public:
 
         gridLayout_3->addWidget(rbRotObj, 0, 0, 1, 1);
 
+        pushButton_3 = new QPushButton(groupRotation);
+        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+
+        gridLayout_3->addWidget(pushButton_3, 2, 1, 1, 1);
+
         rbRotCam = new QRadioButton(groupRotation);
         rbRotCam->setObjectName(QStringLiteral("rbRotCam"));
 
@@ -258,36 +293,31 @@ public:
 
         gridLayout_3->addWidget(pushButton, 1, 1, 1, 1);
 
-        pushButton_3 = new QPushButton(groupRotation);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
 
-        gridLayout_3->addWidget(pushButton_3, 2, 1, 1, 1);
+        verticalLayout->addWidget(groupRotation);
 
-
-        verticalLayout_2->addWidget(groupRotation);
-
-        cbShowWireframe = new QCheckBox(dockWidgetContents);
+        cbShowWireframe = new QCheckBox(tab);
         cbShowWireframe->setObjectName(QStringLiteral("cbShowWireframe"));
 
-        verticalLayout_2->addWidget(cbShowWireframe);
+        verticalLayout->addWidget(cbShowWireframe);
 
-        cbShowTexture = new QCheckBox(dockWidgetContents);
+        cbShowTexture = new QCheckBox(tab);
         cbShowTexture->setObjectName(QStringLiteral("cbShowTexture"));
 
-        verticalLayout_2->addWidget(cbShowTexture);
+        verticalLayout->addWidget(cbShowTexture);
 
-        cbShowPoints = new QCheckBox(dockWidgetContents);
+        cbShowPoints = new QCheckBox(tab);
         cbShowPoints->setObjectName(QStringLiteral("cbShowPoints"));
         cbShowPoints->setChecked(true);
 
-        verticalLayout_2->addWidget(cbShowPoints);
+        verticalLayout->addWidget(cbShowPoints);
 
-        cbShowGrid = new QCheckBox(dockWidgetContents);
+        cbShowGrid = new QCheckBox(tab);
         cbShowGrid->setObjectName(QStringLiteral("cbShowGrid"));
 
-        verticalLayout_2->addWidget(cbShowGrid);
+        verticalLayout->addWidget(cbShowGrid);
 
-        groupLight = new QGroupBox(dockWidgetContents);
+        groupLight = new QGroupBox(tab);
         groupLight->setObjectName(QStringLiteral("groupLight"));
         gridLayout_2 = new QGridLayout(groupLight);
         gridLayout_2->setSpacing(6);
@@ -337,7 +367,49 @@ public:
         cbSpecular->raise();
         bColorObj->raise();
 
-        verticalLayout_2->addWidget(groupLight);
+        verticalLayout->addWidget(groupLight);
+
+
+        verticalLayout_3->addLayout(verticalLayout);
+
+        tabWidget->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QStringLiteral("tab_2"));
+        verticalLayout_5 = new QVBoxLayout(tab_2);
+        verticalLayout_5->setSpacing(6);
+        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
+        verticalLayout_4 = new QVBoxLayout();
+        verticalLayout_4->setSpacing(6);
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        groupBox = new QGroupBox(tab_2);
+        groupBox->setObjectName(QStringLiteral("groupBox"));
+        cbLine = new QCheckBox(groupBox);
+        cbLine->setObjectName(QStringLiteral("cbLine"));
+        cbLine->setEnabled(true);
+        cbLine->setGeometry(QRect(10, 30, 91, 17));
+        cbLine->setChecked(false);
+        cbLineChainkin = new QCheckBox(groupBox);
+        cbLineChainkin->setObjectName(QStringLiteral("cbLineChainkin"));
+        cbLineChainkin->setGeometry(QRect(120, 30, 141, 17));
+        labelAngle = new QLabel(groupBox);
+        labelAngle->setObjectName(QStringLiteral("labelAngle"));
+        labelAngle->setGeometry(QRect(10, 60, 125, 20));
+        spinAngle = new QSpinBox(groupBox);
+        spinAngle->setObjectName(QStringLiteral("spinAngle"));
+        spinAngle->setGeometry(QRect(120, 60, 141, 20));
+        spinAngle->setMinimum(1);
+        spinAngle->setMaximum(1000);
+        spinAngle->setValue(1);
+
+        verticalLayout_4->addWidget(groupBox);
+
+
+        verticalLayout_5->addLayout(verticalLayout_4);
+
+        tabWidget->addTab(tab_2, QString());
+
+        verticalLayout_2->addWidget(tabWidget);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -359,6 +431,9 @@ public:
 
         retranslateUi(Maths5A_CoonsClass);
 
+        tabWidget->setCurrentIndex(1);
+
+
         QMetaObject::connectSlotsByName(Maths5A_CoonsClass);
     } // setupUi
 
@@ -369,20 +444,20 @@ public:
         groupMode->setTitle(QApplication::translate("Maths5A_CoonsClass", "Mode de g\303\251n\303\251ration B\303\251ziers", 0));
         rbAdjust->setText(QApplication::translate("Maths5A_CoonsClass", "R\303\251glage de l'hauteur", 0));
         laHorizontal->setText(QApplication::translate("Maths5A_CoonsClass", "Degr\303\251 horizontal", 0));
-        label->setText(QApplication::translate("Maths5A_CoonsClass", "Ordre de raccordement", 0));
         bJoin->setText(QApplication::translate("Maths5A_CoonsClass", "Raccorder", 0));
-        rbRandom->setText(QApplication::translate("Maths5A_CoonsClass", "Al\303\251atoire", 0));
+        label->setText(QApplication::translate("Maths5A_CoonsClass", "Ordre de raccordement", 0));
         laVertical->setText(QApplication::translate("Maths5A_CoonsClass", "Degr\303\251 vertical", 0));
         bCancelJoin->setText(QApplication::translate("Maths5A_CoonsClass", "Annuler", 0));
-        laPrecision->setText(QApplication::translate("Maths5A_CoonsClass", "Nombre de pas (pr\303\251cision)", 0));
         bResetData->setText(QApplication::translate("Maths5A_CoonsClass", "R\303\251initialiser les donn\303\251es", 0));
+        laPrecision->setText(QApplication::translate("Maths5A_CoonsClass", "Nombre de pas (pr\303\251cision)", 0));
         laTimeCalcSurface->setText(QApplication::translate("Maths5A_CoonsClass", "0 us", 0));
+        rbRandom->setText(QApplication::translate("Maths5A_CoonsClass", "Al\303\251atoire", 0));
         groupRotation->setTitle(QApplication::translate("Maths5A_CoonsClass", "Subdivision", 0));
         radioButton->setText(QApplication::translate("Maths5A_CoonsClass", "Kobbelt", 0));
         rbRotObj->setText(QApplication::translate("Maths5A_CoonsClass", "Catmull-Clark", 0));
+        pushButton_3->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
         rbRotCam->setText(QApplication::translate("Maths5A_CoonsClass", "Loop", 0));
         pushButton->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Cube", 0));
-        pushButton_3->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
         cbShowWireframe->setText(QApplication::translate("Maths5A_CoonsClass", "Filaire", 0));
         cbShowTexture->setText(QApplication::translate("Maths5A_CoonsClass", "Texture", 0));
         cbShowPoints->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher les points", 0));
@@ -395,6 +470,12 @@ public:
         bColorS2->setText(QString());
         cbLight2->setText(QApplication::translate("Maths5A_CoonsClass", "Source 2", 0));
         bColorObj->setText(QApplication::translate("Maths5A_CoonsClass", "Couleur du patch", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Maths5A_CoonsClass", "1", 0));
+        groupBox->setTitle(QApplication::translate("Maths5A_CoonsClass", "Corner Cutting", 0));
+        cbLine->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher lignes", 0));
+        cbLineChainkin->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher lignes (Chainkin)", 0));
+        labelAngle->setText(QApplication::translate("Maths5A_CoonsClass", "Angle courbe", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Maths5A_CoonsClass", "2", 0));
         bResetCam->setText(QApplication::translate("Maths5A_CoonsClass", "R\303\251initialiser le cam\303\251ra", 0));
         bQuit->setText(QApplication::translate("Maths5A_CoonsClass", "Quitter", 0));
     } // retranslateUi

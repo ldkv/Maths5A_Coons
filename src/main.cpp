@@ -7,5 +7,6 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	Maths5A_Coons w;
 	w.show();
+
 	return a.exec();
 }

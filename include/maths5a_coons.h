@@ -18,6 +18,9 @@ private slots:
 	void updateStatus();
 	void setColor(int idButton);
 	void quit();
+	void showLine();
+	void showLineChaikin();
+	void setAngle();
 
 private:
 	Ui::Maths5A_CoonsClass ui;

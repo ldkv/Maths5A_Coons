@@ -102,4 +102,4 @@ int getSideIDFromPoints(vector<Side> s, Point x, Point y);
 int getPointIndex(vector<Point> pts, int id);
 
 
-vector<Face> subdivide(vector<Face> faces, int sizex = 4, int sizey = 4);
+vector<Face> subdivideC(vector<Face> faces, int sizex = 4, int sizey = 4);

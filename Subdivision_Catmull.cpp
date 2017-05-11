@@ -120,7 +120,7 @@ Point computeVertexPoint(vector<Side> sides) {
 }
 
 // Fonction de subdivision
-vector<Face> subdivide(vector<Face> faces, int sizex, int sizey) {
+vector<Face> subdivideC(vector<Face> faces, int sizex, int sizey) {
 	// Résultat de la subdivision
 	vector<Face> resultFaces;
 
