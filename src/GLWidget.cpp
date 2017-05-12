@@ -69,11 +69,6 @@ void GLWidget::initializeGL()
 	// Chargement de la texture
 	LoadGLTextures("texture.jpg");
 
-	// Subdivision Loop - Kobbelt
-	createCube(ts, es, vs);
-	createCube(tsOri, esOri, vsOri);
-	createCubeAlt();
-
 	pointsChaikin.push_back(vector<QVector3D>());
 
 	generateControlPoints();
@@ -147,19 +142,22 @@ void GLWidget::drawScene()
 	{
 		// Surbriller les points de raccordement
 		drawPoints(points, { 0, 1.0, 0 }, 10);
+		drawMesh(tsBezier, esBezier, WHITE, 20);
 	}
 
 	// Subdivision
 	drawMesh(tsOri, esOri, BLUE, 5);
 	drawMesh(ts, es, WHITE, 20);
-	//drawMesh(tsBezier, esBezier, WHITE, 20);
-
-	//drawFaces(cubeFaces);
-	//drawFaces(dividedCube);
+	
+	drawFaces(cubeFaces);
+	drawFaces(dividedCube);
 	if (showTexture) {
 		drawMesh(meshFaces);
 	}
 
+	if (showWireframe) {
+		drawFaces(meshFaces);
+	}
 	//drawPoints(controlPoints, { 0, 1.0, 0 }, 10);
 
 	if (showLine) {
@@ -373,20 +371,26 @@ void GLWidget::createBezierTriangle(vector<Triangle*> &ts, vector<Edge*> &es, ve
 // Réinitialiser le caméra au paramètres par défaut
 void GLWidget::subdivide(int choice)
 {
-	//Subdivision_Loop(ts, es, vs);
-	Subdivision_Kobbelt(ts, es, vs);
-	//Subdivision_Kobbelt(tsBezier, esBezier, vsBezier);
 	switch (choice)
 	{
 	case 1:
-		Subdivision_Loop(ts, es, vs);
+		if (showPts)
+			Subdivision_Loop(tsBezier, esBezier, vsBezier);
+		else
+			Subdivision_Loop(ts, es, vs);
 		break;
 	case 2:
-		Subdivision_Kobbelt(ts, es, vs);
-		//Subdivision_Kobbelt(tsBezier, esBezier, vsBezier);
+		if (showPts)
+			Subdivision_Kobbelt(tsBezier, esBezier, vsBezier);
+		else
+			Subdivision_Kobbelt(ts, es, vs);
+		
 		break;
 	case 3:
-		Subdivision_Butterfly(ts, es, vs);
+		if (showPts)
+			Subdivision_Butterfly(tsBezier, esBezier, vsBezier);
+		else
+			Subdivision_Butterfly(ts, es, vs);
 		break;
 	default:
 		break;
@@ -1056,6 +1060,21 @@ void GLWidget::resetData()
 		delete e;
 	for each (Vertex* v in vsOri)
 		delete v;
+
+	for each (Triangle* t in tsBezier)
+		delete t;
+	for each (Edge* e in esBezier)
+		delete e;
+	for each (Vertex* v in vsBezier)
+		delete v;
+
+	tsBezier.clear();
+	esBezier.clear();
+	vsBezier.clear();
+
+	generateControlPoints();
+	generateControlPointsTriangle();
+
 	ts.clear();
 	es.clear();
 	vs.clear();
@@ -1093,11 +1112,15 @@ void GLWidget::createCubeAlt() {
 	//tmp = { QVector3D(50, 50, -50), QVector3D(50, 50, 50), QVector3D(50, -50, 50), QVector3D(50, -50, -50) };
 	tmp = { QVector3D(50, 50, -50), QVector3D(50, 200, 0), QVector3D(50, 50, 50), QVector3D(50, -50, 50),  QVector3D(50, -50, -50) };
 	cubeFaces.push_back(tmp);
+	dividedCube = cubeFaces;
 }
 
 void GLWidget::subdivideCatmull()
 {
-	meshFaces = subdivideC(meshFaces);
+	if (showWireframe || showTexture)
+		meshFaces = subdivideC(meshFaces);
+	else
+		dividedCube = subdivideC(dividedCube);
 }
 
 void GLWidget::generateCube()

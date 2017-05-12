@@ -168,19 +168,6 @@ void removeEdgefromVertex(Edge* e, Vertex* v)
 
 void Subdivision_Loop(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs)
 {
-	// Calculer des nouveaux vertexes
-	vector<QVector3D> vtemp;
-	for (int i = 0; i < vs.size(); i++)
-	{
-		int n = vs[i]->vEs.size();
-		QVector3D somme(0, 0, 0);
-		for each (Edge* e in vs[i]->vEs)
-			somme += getOtherVertexfromEdge(vs[i], e)->coord;
-		vtemp.push_back((1 - n*alphaLoop[n]) * vs[i]->coord + alphaLoop[n] * somme);
-	}
-	for (int i = 0; i < vtemp.size(); i++)
-		vs[i]->coord = vtemp[i];
-
 	// Calculer les edge points
 	for (int i = 0; i < es.size(); i++)
 	{
@@ -195,6 +182,21 @@ void Subdivision_Loop(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> 
 		}
 		vs.push_back(es[i]->edgePt);
 	}
+
+	// Calculer des nouveaux vertexes
+	vector<QVector3D> vtemp;
+	for (int i = 0; i < vs.size(); i++)
+	{
+		int n = vs[i]->vEs.size();
+		QVector3D somme(0, 0, 0);
+		for each (Edge* e in vs[i]->vEs)
+			somme += getOtherVertexfromEdge(vs[i], e)->coord;
+		vtemp.push_back((1 - n*alphaLoop[n]) * vs[i]->coord + alphaLoop[n] * somme);
+	}
+	for (int i = 0; i < vtemp.size(); i++)
+		vs[i]->coord = vtemp[i];
+
+
 
 	int oldTriangleSize = ts.size();
 	int oldEdgeSize = es.size();
