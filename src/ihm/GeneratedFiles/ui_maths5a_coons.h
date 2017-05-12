@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'maths5a_coons.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.0
+** Created by: Qt User Interface Compiler version 5.6.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -112,7 +112,7 @@ public:
     {
         if (Maths5A_CoonsClass->objectName().isEmpty())
             Maths5A_CoonsClass->setObjectName(QStringLiteral("Maths5A_CoonsClass"));
-        Maths5A_CoonsClass->resize(1129, 825);
+        Maths5A_CoonsClass->resize(1129, 973);
         centralWidget = new QWidget(Maths5A_CoonsClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayout_2 = new QHBoxLayout(centralWidget);
@@ -128,7 +128,7 @@ public:
         Maths5A_CoonsClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(Maths5A_CoonsClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1129, 21));
+        menuBar->setGeometry(QRect(0, 0, 1129, 26));
         Maths5A_CoonsClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(Maths5A_CoonsClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -415,7 +415,7 @@ public:
         spinDegreeCurve->setGeometry(QRect(120, 60, 141, 20));
         spinDegreeCurve->setMinimum(1);
         spinDegreeCurve->setMaximum(1000);
-        spinDegreeCurve->setValue(1);
+        spinDegreeCurve->setValue(3);
         buttonCreateCurve = new QPushButton(groupBox);
         buttonCreateCurve->setObjectName(QStringLiteral("buttonCreateCurve"));
         buttonCreateCurve->setGeometry(QRect(10, 100, 251, 23));
@@ -430,7 +430,7 @@ public:
         spinDegreeCoons->setGeometry(QRect(120, 150, 141, 20));
         spinDegreeCoons->setMinimum(1);
         spinDegreeCoons->setMaximum(1000);
-        spinDegreeCoons->setValue(1);
+        spinDegreeCoons->setValue(3);
         line_3 = new QFrame(groupBox);
         line_3->setObjectName(QStringLiteral("line_3"));
         line_3->setGeometry(QRect(10, 130, 251, 16));
