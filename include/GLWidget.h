@@ -75,12 +75,21 @@ public slots:
 	void setShowLight2(int h) { showLight2 = h == 0 ? false : true; }
 	void setShowLightDiffuse(int i) { showLightDiffuse = i == 0 ? false : true; }
 	void setShowLightSpecular(int i) { showLightSpecular = i == 0 ? false : true; }
+	void displayLine(int);
+	void displayLineChaikin(int);
+	void setChaikinDegree(int);
+	void setCoonsDegree(int);
 	// Réinitialiser les données
 	void resetData();
 	// Réinitialiser le caméra à la vue par défaut
 	void resetCamera();
 	// Exécuter la subdivision
 	void subdivide();
+	void createCubeAlt();
+	void generateCude();
+	void subdivideCatmull();
+	void validateCurve();
+	void generateCoons();
 
 private:
 	// Fonction rendu de la scène
@@ -100,9 +109,12 @@ private:
 	void drawLines(vector<QVector3D> pts, QVector3D color, int lineWidth);
 	void GLWidget::drawChaikinLine(QVector3D color, int lineWidth);
 	// update chaikin points
+	void computePoint();
 	vector<QVector3D> getChaikinPoints(vector<QVector3D> pts, int degree);
 	vector<vector<QVector3D>> getAllChaikinPoints(vector<QVector3D> pts, int degree);
 	vector<vector<QVector3D>> generateCoonsSurface(vector<QVector3D> curve1, vector<QVector3D> curve2, int degree);
+	vector<vector<QVector3D>> GLWidget::generateCoonsSurface(vector<QVector3D> curve1, vector<QVector3D> curve2, vector<QVector3D> curve3, vector<QVector3D> curve4, int degree);
+	void processCoon4();
 	// Textures
 	void GLWidget::LoadGLTextures(const char * name);
 	void generateControlPoints();
@@ -119,6 +131,8 @@ private:
 	vector<vector<QVector3D>> pointsChaikin;
 	vector<int> curveMaxPointIndice;
 	vector<int> coonCurveIndice;
+	int coonsDegree = 3;
+	int coonsState = 0;
 	int pointSelected = -1;
 	bool needUpdate = false;
 
@@ -173,8 +187,6 @@ private:
 
 	QTimer *t_Timer;
 
-	void createCubeAlt();
-	void subcat();
 	void drawFaces(vector<Face> faces);
 	void drawMesh(vector<Face> faces);
 	void generateControlPointsTriangle();

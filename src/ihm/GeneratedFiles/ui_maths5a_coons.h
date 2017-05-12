@@ -71,11 +71,11 @@ public:
     QRadioButton *rbRandom;
     QGroupBox *groupRotation;
     QGridLayout *gridLayout_3;
-    QRadioButton *radioButton;
-    QRadioButton *rbRotObj;
-    QPushButton *bSubdivide;
-    QRadioButton *rbRotCam;
-    QPushButton *pushButton;
+    QRadioButton *rbKobbelt;
+    QRadioButton *rbCatmull;
+    QPushButton *buttonSubdivide;
+    QRadioButton *rbLoop;
+    QPushButton *buttonGenerateCube;
     QCheckBox *cbShowWireframe;
     QCheckBox *cbShowTexture;
     QCheckBox *cbShowPoints;
@@ -94,9 +94,15 @@ public:
     QVBoxLayout *verticalLayout_4;
     QGroupBox *groupBox;
     QCheckBox *cbLine;
-    QCheckBox *cbLineChainkin;
+    QCheckBox *cbLineChaikin;
     QLabel *labelAngle;
-    QSpinBox *spinAngle;
+    QSpinBox *spinDegreeCurve;
+    QPushButton *buttonCreateCurve;
+    QPushButton *buttonGenerateCoons;
+    QLabel *labelCoonsSmooth;
+    QSpinBox *spinDegreeCoons;
+    QFrame *line_3;
+    QPushButton *buttonGenerateCoons4;
     QSpacerItem *verticalSpacer;
     QPushButton *bResetCam;
     QPushButton *bQuit;
@@ -267,31 +273,32 @@ public:
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        radioButton = new QRadioButton(groupRotation);
-        radioButton->setObjectName(QStringLiteral("radioButton"));
+        rbKobbelt = new QRadioButton(groupRotation);
+        rbKobbelt->setObjectName(QStringLiteral("rbKobbelt"));
 
-        gridLayout_3->addWidget(radioButton, 2, 0, 1, 1);
+        gridLayout_3->addWidget(rbKobbelt, 2, 0, 1, 1);
 
-        rbRotObj = new QRadioButton(groupRotation);
-        rbRotObj->setObjectName(QStringLiteral("rbRotObj"));
-        rbRotObj->setChecked(true);
+        rbCatmull = new QRadioButton(groupRotation);
+        rbCatmull->setObjectName(QStringLiteral("rbCatmull"));
+        rbCatmull->setChecked(false);
 
-        gridLayout_3->addWidget(rbRotObj, 0, 0, 1, 1);
+        gridLayout_3->addWidget(rbCatmull, 0, 0, 1, 1);
 
-        bSubdivide = new QPushButton(groupRotation);
-        bSubdivide->setObjectName(QStringLiteral("bSubdivide"));
+        buttonSubdivide = new QPushButton(groupRotation);
+        buttonSubdivide->setObjectName(QStringLiteral("buttonSubdivide"));
 
-        gridLayout_3->addWidget(bSubdivide, 2, 1, 1, 1);
+        gridLayout_3->addWidget(buttonSubdivide, 2, 1, 1, 1);
 
-        rbRotCam = new QRadioButton(groupRotation);
-        rbRotCam->setObjectName(QStringLiteral("rbRotCam"));
+        rbLoop = new QRadioButton(groupRotation);
+        rbLoop->setObjectName(QStringLiteral("rbLoop"));
+        rbLoop->setChecked(true);
 
-        gridLayout_3->addWidget(rbRotCam, 1, 0, 1, 1);
+        gridLayout_3->addWidget(rbLoop, 1, 0, 1, 1);
 
-        pushButton = new QPushButton(groupRotation);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        buttonGenerateCube = new QPushButton(groupRotation);
+        buttonGenerateCube->setObjectName(QStringLiteral("buttonGenerateCube"));
 
-        gridLayout_3->addWidget(pushButton, 1, 1, 1, 1);
+        gridLayout_3->addWidget(buttonGenerateCube, 1, 1, 1, 1);
 
 
         verticalLayout->addWidget(groupRotation);
@@ -389,18 +396,41 @@ public:
         cbLine->setEnabled(true);
         cbLine->setGeometry(QRect(10, 30, 91, 17));
         cbLine->setChecked(false);
-        cbLineChainkin = new QCheckBox(groupBox);
-        cbLineChainkin->setObjectName(QStringLiteral("cbLineChainkin"));
-        cbLineChainkin->setGeometry(QRect(120, 30, 141, 17));
+        cbLineChaikin = new QCheckBox(groupBox);
+        cbLineChaikin->setObjectName(QStringLiteral("cbLineChaikin"));
+        cbLineChaikin->setGeometry(QRect(120, 30, 141, 17));
         labelAngle = new QLabel(groupBox);
         labelAngle->setObjectName(QStringLiteral("labelAngle"));
         labelAngle->setGeometry(QRect(10, 60, 125, 20));
-        spinAngle = new QSpinBox(groupBox);
-        spinAngle->setObjectName(QStringLiteral("spinAngle"));
-        spinAngle->setGeometry(QRect(120, 60, 141, 20));
-        spinAngle->setMinimum(1);
-        spinAngle->setMaximum(1000);
-        spinAngle->setValue(1);
+        spinDegreeCurve = new QSpinBox(groupBox);
+        spinDegreeCurve->setObjectName(QStringLiteral("spinDegreeCurve"));
+        spinDegreeCurve->setGeometry(QRect(120, 60, 141, 20));
+        spinDegreeCurve->setMinimum(1);
+        spinDegreeCurve->setMaximum(1000);
+        spinDegreeCurve->setValue(1);
+        buttonCreateCurve = new QPushButton(groupBox);
+        buttonCreateCurve->setObjectName(QStringLiteral("buttonCreateCurve"));
+        buttonCreateCurve->setGeometry(QRect(10, 100, 251, 23));
+        buttonGenerateCoons = new QPushButton(groupBox);
+        buttonGenerateCoons->setObjectName(QStringLiteral("buttonGenerateCoons"));
+        buttonGenerateCoons->setGeometry(QRect(10, 180, 251, 23));
+        labelCoonsSmooth = new QLabel(groupBox);
+        labelCoonsSmooth->setObjectName(QStringLiteral("labelCoonsSmooth"));
+        labelCoonsSmooth->setGeometry(QRect(10, 150, 125, 20));
+        spinDegreeCoons = new QSpinBox(groupBox);
+        spinDegreeCoons->setObjectName(QStringLiteral("spinDegreeCoons"));
+        spinDegreeCoons->setGeometry(QRect(120, 150, 141, 20));
+        spinDegreeCoons->setMinimum(1);
+        spinDegreeCoons->setMaximum(1000);
+        spinDegreeCoons->setValue(1);
+        line_3 = new QFrame(groupBox);
+        line_3->setObjectName(QStringLiteral("line_3"));
+        line_3->setGeometry(QRect(10, 130, 251, 16));
+        line_3->setFrameShape(QFrame::HLine);
+        line_3->setFrameShadow(QFrame::Sunken);
+        buttonGenerateCoons4 = new QPushButton(groupBox);
+        buttonGenerateCoons4->setObjectName(QStringLiteral("buttonGenerateCoons4"));
+        buttonGenerateCoons4->setGeometry(QRect(10, 210, 251, 23));
 
         verticalLayout_4->addWidget(groupBox);
 
@@ -431,7 +461,7 @@ public:
 
         retranslateUi(Maths5A_CoonsClass);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(Maths5A_CoonsClass);
@@ -453,11 +483,11 @@ public:
         laTimeCalcSurface->setText(QApplication::translate("Maths5A_CoonsClass", "0 us", 0));
         rbRandom->setText(QApplication::translate("Maths5A_CoonsClass", "Al\303\251atoire", 0));
         groupRotation->setTitle(QApplication::translate("Maths5A_CoonsClass", "Subdivision", 0));
-        radioButton->setText(QApplication::translate("Maths5A_CoonsClass", "Kobbelt", 0));
-        rbRotObj->setText(QApplication::translate("Maths5A_CoonsClass", "Catmull-Clark", 0));
-        bSubdivide->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
-        rbRotCam->setText(QApplication::translate("Maths5A_CoonsClass", "Loop", 0));
-        pushButton->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Cube", 0));
+        rbKobbelt->setText(QApplication::translate("Maths5A_CoonsClass", "Kobbelt", 0));
+        rbCatmull->setText(QApplication::translate("Maths5A_CoonsClass", "Catmull-Clark", 0));
+        buttonSubdivide->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
+        rbLoop->setText(QApplication::translate("Maths5A_CoonsClass", "Loop", 0));
+        buttonGenerateCube->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Cube", 0));
         cbShowWireframe->setText(QApplication::translate("Maths5A_CoonsClass", "Filaire", 0));
         cbShowTexture->setText(QApplication::translate("Maths5A_CoonsClass", "Texture", 0));
         cbShowPoints->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher les points", 0));
@@ -473,8 +503,12 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Maths5A_CoonsClass", "1", 0));
         groupBox->setTitle(QApplication::translate("Maths5A_CoonsClass", "Corner Cutting", 0));
         cbLine->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher lignes", 0));
-        cbLineChainkin->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher lignes (Chainkin)", 0));
-        labelAngle->setText(QApplication::translate("Maths5A_CoonsClass", "Angle courbe", 0));
+        cbLineChaikin->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher lignes (Chainkin)", 0));
+        labelAngle->setText(QApplication::translate("Maths5A_CoonsClass", "Degr\303\251 lissage", 0));
+        buttonCreateCurve->setText(QApplication::translate("Maths5A_CoonsClass", "Valider Courbe", 0));
+        buttonGenerateCoons->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Coons", 0));
+        labelCoonsSmooth->setText(QApplication::translate("Maths5A_CoonsClass", "Degr\303\251 lissage", 0));
+        buttonGenerateCoons4->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Coons (4)", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Maths5A_CoonsClass", "2", 0));
         bResetCam->setText(QApplication::translate("Maths5A_CoonsClass", "R\303\251initialiser le cam\303\251ra", 0));
         bQuit->setText(QApplication::translate("Maths5A_CoonsClass", "Quitter", 0));
