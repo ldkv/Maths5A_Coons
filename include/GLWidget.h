@@ -173,7 +173,7 @@ private:
 	int precision = 10;
 	int joinOrder = 0;		// Raccordement 0-2
 	int depthBetweenPoints = 4;
-	bool showWireframe = false;
+	bool showWireframe = true;
 	bool showPts = true;
 	bool showLine = true;
 	bool showChaikin = true;
@@ -191,4 +191,5 @@ private:
 	void drawMesh(vector<Face> faces);
 	void generateControlPointsTriangle();
 	void createBezierTriangle(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs, vector<vector<Point>> points);
+	void drawMeshCustom(vector<Face> faces);
 };

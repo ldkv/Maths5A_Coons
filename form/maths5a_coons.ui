@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1129</width>
-    <height>823</height>
+    <height>825</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,7 +66,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
@@ -275,8 +275,14 @@
            </item>
            <item>
             <widget class="QCheckBox" name="cbShowWireframe">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="text">
               <string>Filaire</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>

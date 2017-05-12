@@ -111,7 +111,7 @@ public:
     {
         if (Maths5A_CoonsClass->objectName().isEmpty())
             Maths5A_CoonsClass->setObjectName(QStringLiteral("Maths5A_CoonsClass"));
-        Maths5A_CoonsClass->resize(1129, 823);
+        Maths5A_CoonsClass->resize(1129, 825);
         centralWidget = new QWidget(Maths5A_CoonsClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayout_2 = new QHBoxLayout(centralWidget);
@@ -305,6 +305,8 @@ public:
 
         cbShowWireframe = new QCheckBox(tab);
         cbShowWireframe->setObjectName(QStringLiteral("cbShowWireframe"));
+        cbShowWireframe->setEnabled(true);
+        cbShowWireframe->setChecked(true);
 
         verticalLayout->addWidget(cbShowWireframe);
 
@@ -461,7 +463,7 @@ public:
 
         retranslateUi(Maths5A_CoonsClass);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Maths5A_CoonsClass);
