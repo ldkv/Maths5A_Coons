@@ -18,9 +18,8 @@ private slots:
 	void updateStatus();
 	void setColor(int idButton);
 	void quit();
-	void showLine();
-	void showLineChaikin();
-	void setAngle();
+	void generateCube();
+	void subdivide();
 
 private:
 	Ui::Maths5A_CoonsClass ui;

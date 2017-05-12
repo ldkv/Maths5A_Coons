@@ -15,7 +15,11 @@
 
 using namespace std;
 
-#define POINT_SIZE 10
+#define POINT_SIZE	10
+#define RED			QVector3D(1,0,0)
+#define GREEN		QVector3D(0,1,0)
+#define BLUE		QVector3D(0,0,1)
+#define WHITE		QVector3D(1,1,1)
 
 // Structure pour la lumière
 struct Light
@@ -71,12 +75,20 @@ public slots:
 	void setShowLight2(int h) { showLight2 = h == 0 ? false : true; }
 	void setShowLightDiffuse(int i) { showLightDiffuse = i == 0 ? false : true; }
 	void setShowLightSpecular(int i) { showLightSpecular = i == 0 ? false : true; }
+	void displayLine(int);
+	void displayLineChaikin(int);
+	void setChaikinDegree(int);
 	// Réinitialiser les données
 	void resetData();
 	// Réinitialiser le caméra à la vue par défaut
 	void resetCamera();
 	// Exécuter la subdivision
 	void subdivide();
+	void createCubeAlt();
+	void generateCude();
+	void subdivideCatmull();
+	void validateCurve();
+	void generateCoons();
 
 private:
 	// Fonction rendu de la scène
@@ -107,9 +119,9 @@ private:
 	void generateControlPoints();
 
 	// Subdivision Loop - Kobbelt
-	vector<Triangle*> ts; 
-	vector<Edge*> es;
-	vector<Vertex*> vs;
+	vector<Triangle*> ts, tsOri; 
+	vector<Edge*> es, esOri;
+	vector<Vertex*> vs, vsOri;
 	void drawMesh(vector<Triangle*>, vector<Edge*>, QVector3D, int);
 
 	// Ajout des points
@@ -174,8 +186,6 @@ private:
 
 	QTimer *t_Timer;
 
-	void createCubeAlt();
-	void subcat();
 	void drawFaces(vector<Face> faces);
 	void drawMesh(vector<Face> faces);
 };

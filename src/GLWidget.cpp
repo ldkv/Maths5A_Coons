@@ -26,6 +26,7 @@ GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent), m_theta(180.0f), m_
 
 	// Subdivision Loop - Kobbelt
 	createCube(ts, es, vs);
+	createCube(tsOri, esOri, vsOri);
 	pointsChaikin.push_back(vector<QVector3D>());
 }
 
@@ -70,8 +71,8 @@ void GLWidget::initializeGL()
 	LoadGLTextures("texture.jpg");
 
 	generateControlPoints();
-	createCubeAlt();
-	dividedCube = subdivideC(cubeFaces);
+	//createCubeAlt();
+	//dividedCube = subdivideC(cubeFaces);
 	//dividedCube = subdivideC(dividedCube);
 	//dividedCube = subdivideC(dividedCube);
 	//meshFaces = subdivideC(meshFaces);
@@ -142,11 +143,12 @@ void GLWidget::drawScene()
 	{
 		// Surbriller les points de raccordement
 		drawPoints(points, { 0, 1.0, 0 }, 10);
-		drawMesh(ts, es, { 1.0, 0, 0 }, 20);
+		drawMesh(tsOri, esOri, BLUE, 5);
+		drawMesh(ts, es, WHITE, 20);
 	}
 
-	//drawFaces(cubeFaces);
-	//drawFaces(dividedCube);
+	drawFaces(cubeFaces);
+	drawFaces(dividedCube);
 	//
 	drawFaces(meshFaces);
 	if (showTexture) {
@@ -167,7 +169,7 @@ void GLWidget::drawMesh(vector<Triangle*> ts, vector<Edge*> es, QVector3D color,
 			glVector3D(t->v3->coord, true);
 		glEnd();
 		*/
-		glVector3D({0,0,1}, false);
+		glVector3D(color, false);
 		glBegin(GL_LINE_LOOP);
 			for each (Vertex* v in t->tVs)
 				glVector3D(v->coord, true);
@@ -257,7 +259,8 @@ void GLWidget::generateControlPoints()
 // Réinitialiser le caméra au paramètres par défaut
 void GLWidget::subdivide()
 {
-	Subdivision_Loop(ts, es, vs);
+	//Subdivision_Loop(ts, es, vs);
+	Subdivision_Kobbelt(ts, es, vs);
 }
 
 void GLWidget::LoadGLTextures(const char * name)
@@ -770,27 +773,10 @@ void GLWidget::keyPressEvent(QKeyEvent* e)
 		m_theta -= 2.0f;
 		break;
 	case Qt::Key_Return:
-		// verification pour éviter d'incérer un doublon
-		if (curveMaxPointIndice.size() == 0 || curveMaxPointIndice[curveMaxPointIndice.size() - 1] != points.size() - 1)
-		{
-			curveMaxPointIndice.push_back(points.size()-1);
-			pointsChaikin.push_back(vector<QVector3D>());
-		}
+		validateCurve();
 		break;
 	case Qt::Key_M:
-		// on a besoin d'au moins 2 courbes valides donc pointsChaikin.size() doit etre au minimum 3
-		// car lorsqu'on press enter pour valider une courbe, on ajoute deja la prochaine courbe (vide), voir "case Qt::Key_Return"
-		if (pointsChaikin.size() > 2)
-		{
-			int degree = 4; // nombre de courbe intermédiaire généré
-			int maxSize = pointsChaikin.size() - 1;
-			vector<vector<QVector3D>> pointsTmp = generateCoonsSurface(pointsChaikin[maxSize-2], pointsChaikin[maxSize - 1], degree);
-			pointsChaikin.insert(pointsChaikin.end(), pointsTmp.begin(), pointsTmp.end());
-
-			coonCurveIndice.push_back(maxSize - 2);
-			coonCurveIndice.push_back(maxSize - 1 + degree);
-			pointsChaikin.push_back(vector<QVector3D>());
-		}
+		generateCoons();
 		break;
 	case Qt::Key_C:
 		processCoon4();
@@ -886,6 +872,70 @@ void GLWidget::createCubeAlt() {
 	cubeFaces.push_back(tmp);
 }
 
-void GLWidget::subcat() {
+void GLWidget::subdivideCatmull()
+{
+	meshFaces = subdivideC(meshFaces);
+}
 
+void GLWidget::generateCude()
+{
+	createCube(ts, es, vs);
+}
+
+// Valider une courbe en cours de creation
+void GLWidget::validateCurve()
+{		// verification pour éviter d'incérer un doublon
+	if (curveMaxPointIndice.size() == 0 || curveMaxPointIndice[curveMaxPointIndice.size() - 1] != points.size() - 1)
+	{
+		curveMaxPointIndice.push_back(points.size() - 1);
+		pointsChaikin.push_back(vector<QVector3D>());
+
+		qDebug() << "Validate Curve " << showLine;
+	}
+}
+
+void GLWidget::generateCoons()
+{
+	// on a besoin d'au moins 2 courbes valides donc pointsChaikin.size() doit etre au minimum 3
+	// car lorsqu'on press enter pour valider une courbe, on ajoute deja la prochaine courbe (vide), voir "case Qt::Key_Return"
+	if (pointsChaikin.size() > 2)
+	{
+		int degree = 4; // nombre de courbe intermédiaire généré
+		int maxSize = pointsChaikin.size() - 1;
+		vector<vector<QVector3D>> pointsTmp = generateCoonsSurface(pointsChaikin[maxSize - 2], pointsChaikin[maxSize - 1], degree);
+		pointsChaikin.insert(pointsChaikin.end(), pointsTmp.begin(), pointsTmp.end());
+
+		coonCurveIndice.push_back(maxSize - 2);
+		coonCurveIndice.push_back(maxSize - 1 + degree);
+		pointsChaikin.push_back(vector<QVector3D>());
+
+		qDebug() << "Generate Coons : " << showLine;
+	}
+}
+
+// Montrer/Cacher les ligne 
+void GLWidget::displayLine(int val)
+{
+	if (val != 0)
+		showLine = true;
+	else
+		showLine = false;
+	qDebug() << "Show line : " << showLine;
+}
+
+// Montrer/Cacher les ligne (chainkin)
+void GLWidget::displayLineChaikin(int val)
+{
+	if (val != 0)
+		showChaikin = true;
+	else
+		showChaikin = false;
+
+	qDebug() << "Show line : " << showChaikin;
+}
+
+void GLWidget::setChaikinDegree(int val)
+{
+	chaikinDegree = val;
+	qDebug() << "Chainkin Degree : " << val;
 }
