@@ -28,6 +28,7 @@ GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent), m_theta(180.0f), m_
 	createCube(ts, es, vs);
 	createCube(tsOri, esOri, vsOri);
 	pointsChaikin.push_back(vector<QVector3D>());
+	generateControlPointsTriangle();
 }
 
 // A la suppression du programme
@@ -48,6 +49,10 @@ vector<Face> cubeFaces;
 vector<int> cubeIndices;
 vector<Face> dividedCube;
 vector<Point> ptsControl;
+vector<vector<Point>> ptsControlTriangle;
+vector<Triangle*> tsBezier;
+vector<Edge*> esBezier;
+vector<Vertex*> vsBezier;
 vector<Face> meshFaces;
 vector<QVector3D> controlPoints;
 
@@ -144,16 +149,17 @@ void GLWidget::drawScene()
 		// Surbriller les points de raccordement
 		drawPoints(points, { 0, 1.0, 0 }, 10);
 		drawMesh(tsOri, esOri, BLUE, 5);
-		drawMesh(ts, es, WHITE, 20);
+		//drawMesh(ts, es, WHITE, 20);
+		drawMesh(tsBezier, esBezier, WHITE, 20);
 	}
 
 	//drawFaces(cubeFaces);
 	//drawFaces(dividedCube);
 	//
-	drawFaces(meshFaces);
+	/*drawFaces(meshFaces);
 	if (showTexture) {
 		drawMesh(meshFaces);
-	}
+	}*/
 	//drawPoints(controlPoints, { 0, 1.0, 0 }, 10);
 }
 
@@ -256,11 +262,118 @@ void GLWidget::generateControlPoints()
 		meshFaces.push_back(tmpPoints);*/
 }
 
+void GLWidget::generateControlPointsTriangle()
+{
+	// Si l'utilisateur n'a pas changé les valeurs minimales
+	if (precision < 2 || degU < 2 || degV < 2)
+		return;
+
+	// Sinon, on efface les valeurs actuels des taleaux
+	ptsControlTriangle.clear();
+
+	ptsControlTriangle.resize(degU);
+	int x, y, z, zx, zy;
+
+
+	// Cas où l'on souhaite un placement régulier
+	x = -degU / 2 * 20;
+	y = -degV / 2 * 20;
+	zx = 0;
+	zy = 0;
+	// Pour chacune des valeurs de nos axes
+	for (int i = 0; i < degU; i++)
+	{
+		for (int j = 0; j < degV; j++)
+		{
+			// On rajoute le point au tableau de points de controle
+			ptsControlTriangle[i].push_back(QVector3D(x, y, zy));
+			y += 20;
+			if (j < degV / 2)
+				zy += 5 * depthBetweenPoints;
+			else
+				zy -= 5 * depthBetweenPoints;
+		}
+		y = -degV / 2 * 20;
+		x += 20;
+		if (i < degU / 2)
+			zx += 5 * depthBetweenPoints;
+		else
+			zx -= 5 * depthBetweenPoints;
+		zy = zx;
+	}
+
+	createBezierTriangle(tsBezier, esBezier, vsBezier, ptsControlTriangle);
+}
+
+Edge* updateEdgeCustom(vector<Edge*> &es, Vertex* p1, Vertex* p2, Triangle* t)
+{
+	int i = 0;
+	for (i = 0; i < es.size(); i++)
+	{
+		if ((es[i]->v1->coord == p1->coord && es[i]->v2->coord == p2->coord)
+			|| (es[i]->v1->coord == p2->coord && es[i]->v2->coord == p1->coord))
+		{
+			es[i]->addTriangle(t);
+			return es[i];
+		}
+	}
+
+	Edge *e = new Edge(p1, p2);
+	e->addTriangle(t);
+	es.push_back(e);
+	es[i]->v1->vEs.push_back(es[i]);
+	es[i]->v2->vEs.push_back(es[i]);
+	return e;
+}
+
+void addTriangleCustom(Vertex* p1, Vertex* p2, Vertex* p3, vector<Triangle*> &ts, vector<Edge*> &es)
+{
+	Triangle* t = new Triangle(p1, p2, p3);
+	t->tEs.push_back(updateEdgeCustom(es, p2, p3, t));
+	t->tEs.push_back(updateEdgeCustom(es, p3, p1, t));
+	t->tEs.push_back(updateEdgeCustom(es, p1, p2, t));
+	ts.push_back(t);
+}
+
+void GLWidget::createBezierTriangle(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs, vector<vector<Point>> points)
+{
+	calcAlphaLoop();
+	calcAlphaKobbelt();
+
+	for (int i = 0; i < points.size()-1; i++)
+	{
+
+		for (int j = 0; j < points[0].size()-1; j++)
+		{
+			Vertex* x0 = new Vertex(points[i][j].coord);
+			vs.push_back(x0);
+		}
+	}
+	for (int i = 0; i < points.size() - 1; i++)
+	{
+		for (int j = 0; j < points[0].size() - 1; j++)
+		{
+			Vertex* x0 = new Vertex(points[i][j].coord);
+			Vertex* x1 = new Vertex(points[i + 1][j + 1].coord);
+			Vertex* x2 = new Vertex(points[i + 1][j].coord);
+			Vertex* x3 = new Vertex(points[i][j + 1].coord);
+			Vertex* x4 = new Vertex((points[i][j].coord.x()+ points[i + 1][j+1].coord.x())/2, (points[i][j].coord.y() + points[i + 1][j+1].coord.y()) / 2, (points[i][j].coord.z() + points[i + 1][j+1].coord.z()) / 2);
+			
+			addTriangleCustom(x0, x2, x4, ts, es);
+			addTriangleCustom(x0, x4, x3, ts, es);
+			addTriangleCustom(x4, x2, x1, ts, es);
+			addTriangleCustom(x4, x1, x3, ts, es);
+			vs.push_back(x4);
+		}
+	}
+}
+
 // Réinitialiser le caméra au paramètres par défaut
 void GLWidget::subdivide()
 {
 	//Subdivision_Loop(ts, es, vs);
-	Subdivision_Kobbelt(ts, es, vs);
+	//Subdivision_Kobbelt(ts, es, vs);
+	Subdivision_Kobbelt(tsBezier, esBezier, vsBezier);
 }
 
 void GLWidget::LoadGLTextures(const char * name)
