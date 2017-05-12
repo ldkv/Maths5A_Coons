@@ -161,6 +161,7 @@ void Maths5A_Coons::subdivide()
 	{
 		glScene->subdivideCatmull();
 		qDebug() << "Catmull Clark Subdivision";
+		return;
 	}
 	else if (ui.rbLoop->isChecked())
 	{

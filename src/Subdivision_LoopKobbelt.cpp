@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Subdivision_LoopKobbelt.h"
 
-
 void addTriangle(Vertex* p1, Vertex* p2, Vertex* p3, vector<Triangle*> &ts, vector<Edge*> &es)
 {
 	Triangle* t = new Triangle(p1, p2, p3);
@@ -130,15 +129,17 @@ vector<double> calcAlphaLoop()
 	for (int n = 1; n < MAX_EDGES_ADJACENT; n++)
 	{
 		double n_inv = 1.0 / n;
-		double cos2 = 3.0 / 8.0 + 1.0 / 4.0 * cos(2*PI*n_inv);
+		double cos2 = 0.375 + 0.25 * cos(2*PI*n_inv);
 		cos2 *= cos2;
-		alpha.push_back(n_inv * (5.0 / 8.0 - cos2));
+		alpha.push_back(n_inv * (0.625 - cos2));
 	}
 	return alpha;
 }
 
 Vertex* getOtherVertexfromEdge(Vertex* v, Edge* e)
 {
+	if (v == nullptr || e == nullptr)
+		return nullptr;
 	if (e->v1 == v)
 		return e->v2;
 	return e->v1;
@@ -166,20 +167,6 @@ void removeEdgefromVertex(Edge* e, Vertex* v)
 
 void Subdivision_Loop(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs)
 {
-	// Calculer les edge points
-	for (int i = 0; i < es.size(); i++)
-	{
-		es[i]->edgePt = es[i]->v1->coord + es[i]->v2->coord;
-		if (es[i]->t2 == nullptr)
-			es[i]->edgePt = es[i]->edgePt / 2.0;
-		else
-		{
-			QVector3D vLeft = getOtherVertexfromTriangle(es[i], es[i]->t1)->coord;
-			QVector3D vRight = getOtherVertexfromTriangle(es[i], es[i]->t2)->coord;
-			es[i]->edgePt = 1.0 / 8.0 *(3 * es[i]->edgePt + vLeft + vRight);
-		}
-	}
-
 	// Calculer des nouveaux vertexes
 	vector<QVector3D> vtemp;
 	for (int i = 0; i < vs.size(); i++)
@@ -188,12 +175,24 @@ void Subdivision_Loop(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> 
 		QVector3D somme(0, 0, 0);
 		for each (Edge* e in vs[i]->vEs)
 			somme += getOtherVertexfromEdge(vs[i], e)->coord;
-
 		vtemp.push_back((1 - n*alphaLoop[n]) * vs[i]->coord + alphaLoop[n] * somme);
 	}
-	for (int i = 0; i < vs.size(); i++)
+	for (int i = 0; i < vtemp.size(); i++)
 		vs[i]->coord = vtemp[i];
 
+	// Calculer les edge points
+	for (int i = 0; i < es.size(); i++)
+	{
+		es[i]->edgePt = es[i]->v1->coord + es[i]->v2->coord;
+		if (es[i]->t1 == nullptr || es[i]->t2 == nullptr)
+			es[i]->edgePt = es[i]->edgePt / 2.0;
+		else
+		{
+			QVector3D vLeft = getOtherVertexfromTriangle(es[i], es[i]->t1)->coord;
+			QVector3D vRight = getOtherVertexfromTriangle(es[i], es[i]->t2)->coord;
+			es[i]->edgePt = 0.125 *(3 * es[i]->edgePt + vLeft + vRight);
+		}
+	}
 
 	int oldTriangleSize = ts.size();
 	int oldEdgeSize = es.size();
