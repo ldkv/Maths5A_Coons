@@ -230,14 +230,14 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
               <item row="2" column="0">
-               <widget class="QRadioButton" name="radioButton">
+               <widget class="QRadioButton" name="rbKobbelt">
                 <property name="text">
                  <string>Kobbelt</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="0">
-               <widget class="QRadioButton" name="rbRotObj">
+               <widget class="QRadioButton" name="rbCatmull">
                 <property name="text">
                  <string>Catmull-Clark</string>
                 </property>
@@ -247,21 +247,21 @@
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QPushButton" name="bSubdivide">
+               <widget class="QPushButton" name="buttonSubdivide">
                 <property name="text">
                  <string>Subdiviser</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QRadioButton" name="rbRotCam">
+               <widget class="QRadioButton" name="rbLoop">
                 <property name="text">
                  <string>Loop</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="buttonGenerateCube">
                 <property name="text">
                  <string>Générer Cube</string>
                 </property>
@@ -427,10 +427,10 @@
                </rect>
               </property>
               <property name="text">
-               <string>Angle courbe</string>
+               <string>Degré lissage</string>
               </property>
              </widget>
-             <widget class="QSpinBox" name="spinAngle">
+             <widget class="QSpinBox" name="spinDegreeCurve">
               <property name="geometry">
                <rect>
                 <x>120</x>
@@ -447,6 +447,77 @@
               </property>
               <property name="value">
                <number>1</number>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="buttonCreateCurve">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>100</y>
+                <width>251</width>
+                <height>23</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Valider Courbe</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="buttonGenerateCoons">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>180</y>
+                <width>251</width>
+                <height>23</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Générer Coons</string>
+              </property>
+             </widget>
+             <widget class="QLabel" name="labelCoonsSmooth">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>150</y>
+                <width>125</width>
+                <height>20</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Degré lissage</string>
+              </property>
+             </widget>
+             <widget class="QSpinBox" name="spinDegreeCoons">
+              <property name="geometry">
+               <rect>
+                <x>120</x>
+                <y>150</y>
+                <width>141</width>
+                <height>20</height>
+               </rect>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>1000</number>
+              </property>
+              <property name="value">
+               <number>1</number>
+              </property>
+             </widget>
+             <widget class="Line" name="line_3">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>130</y>
+                <width>251</width>
+                <height>16</height>
+               </rect>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
              </widget>
             </widget>

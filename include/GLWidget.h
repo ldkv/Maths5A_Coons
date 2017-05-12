@@ -75,6 +75,9 @@ public slots:
 	void resetCamera();
 	// Exécuter la subdivision
 	void subdivide();
+	void createCubeAlt();
+	void generateCude();
+	void subdivideCatmull();
 
 private:
 	// Fonction rendu de la scène
@@ -165,7 +168,6 @@ private:
 
 	QTimer *t_Timer;
 
-	void createCubeAlt();
 	void subcat();
 	void drawFaces(vector<Face> faces);
 	void drawMesh(vector<Face> faces);

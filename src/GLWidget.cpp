@@ -731,6 +731,17 @@ void GLWidget::createCubeAlt() {
 	cubeFaces.push_back(tmp);
 }
 
-void GLWidget::subcat() {
+void GLWidget::subdivideCatmull()
+{
+	subdivideC(cubeFaces);
+}
+
+void GLWidget::generateCude()
+{
+	createCube(ts, es, vs);
+}
+
+void GLWidget::subcat()
+{
 
 }

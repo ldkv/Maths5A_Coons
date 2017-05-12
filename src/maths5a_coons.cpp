@@ -30,8 +30,12 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	connect(ui.bJoin, SIGNAL(clicked()), glScene, SLOT(generateJoinPatch()));
 	connect(ui.bCancelJoin, SIGNAL(clicked()), glScene, SLOT(cancelJoin()));
 
+	//generation cube
+	connect(ui.buttonGenerateCube, SIGNAL(clicked()), this, SLOT(generateCube()));
+
 	// Interface de Subdivision
-	connect(ui.bSubdivide, SIGNAL(clicked()), glScene, SLOT(subdivide()));
+	//connect(ui.buttonSubdivide, SIGNAL(clicked()), glScene, SLOT(subdivide()));
+	connect(ui.buttonSubdivide, SIGNAL(clicked()), this, SLOT(subdivide()));
 
 	// Interface lumières + traçage
 	connect(ui.cbShowWireframe, SIGNAL(stateChanged(int)), glScene, SLOT(setWireframe(int)));
@@ -48,7 +52,7 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	//Chainkin
 	connect(ui.cbLine, SIGNAL(stateChanged(int)), this, SLOT(showLine()));
 	connect(ui.cbLineChainkin, SIGNAL(stateChanged(int)), this, SLOT(showLineChaikin()));
-	connect(ui.spinAngle, SIGNAL(valueChanged(int)), this, SLOT(setAngle()));
+	connect(ui.spinDegreeCurve, SIGNAL(valueChanged(int)), this, SLOT(setDegreeCurve()));
 	// Définir la couleur des boutons et leur signal
 	QColor col = convertColor(glScene->objectColor);
 	QString qss = QString("background-color: %1").arg(col.name());
@@ -65,8 +69,8 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	bGroup->addButton(ui.bColorObj, 2);
 	connect(bGroup, SIGNAL(buttonClicked(int)), this, SLOT(setColor(int)));
 	// Rotation Quaternion
-	connect(ui.rbRotObj, SIGNAL(clicked()), this, SLOT(setModeRotation()));
-	connect(ui.rbRotCam, SIGNAL(clicked()), this, SLOT(setModeRotation()));
+	//connect(ui.rbRotObj, SIGNAL(clicked()), this, SLOT(setModeRotation()));
+	//connect(ui.rbRotCam, SIGNAL(clicked()), this, SLOT(setModeRotation()));
 	// Signal depuis le GLWidget
 	connect(glScene, SIGNAL(labelChanged()), this, SLOT(updateLabelTimer()));
 	connect(glScene, SIGNAL(mouseMoved()), this, SLOT(updateStatus()));
@@ -132,19 +136,78 @@ void Maths5A_Coons::updateStatus()
 		));
 }
 
+// Montrer/Cacher les ligne 
 void Maths5A_Coons::showLine()
 {
 	qDebug() << ui.cbLine->isChecked();
 }
 
-void Maths5A_Coons::showLineChaikin()
+// Montrer/Cacher les ligne (chainkin)
+void Maths5A_Coons::showLineChainkin()
 {
 	qDebug() << ui.cbLineChainkin->isChecked();
 }
 
-void Maths5A_Coons::setAngle()
+// Changement degré lissage pour les courbes
+void Maths5A_Coons::setDegreeCurve()
 {
-	qDebug() << ui.spinAngle->value();
+	qDebug() << ui.spinDegreeCurve->value();
+}
+
+// Changement degré lissage pour Coons
+void Maths5A_Coons::setDegreeCoons()
+{
+	qDebug() << ui.spinDegreeCoons->value();
+}
+
+// Applique la generation du cube
+void Maths5A_Coons::generateCube()
+{
+	if (ui.rbCatmull->isChecked())
+	{
+		glScene->createCubeAlt();
+		qDebug() << "Catmull Clark Generer Cube";
+	}
+	else if (ui.rbLoop->isChecked())
+	{
+		glScene->generateCude();
+		qDebug() << "Loop Generer Cube";
+	}
+	else if (ui.rbKobbelt->isChecked())
+	{
+		qDebug() << "Kobbelt Generer Cube";
+	}
+}
+
+// Applique la subdivision
+void Maths5A_Coons::subdivide()
+{
+	if (ui.rbCatmull->isChecked())
+	{
+		glScene->subdivideCatmull();
+		qDebug() << "Catmull Clark Subdivision";
+	}
+	else if (ui.rbLoop->isChecked())
+	{
+		glScene->subdivide();
+		qDebug() << "Loop Subdivision";
+	}
+	else if (ui.rbKobbelt->isChecked())
+	{
+		qDebug() << "Loop Subdivision";
+	}
+}
+
+// Valider une courbe en cours de creation
+void Maths5A_Coons::validateCurve()
+{
+
+}
+
+// Applique Coons via les courbes créées
+void Maths5A_Coons::generateCoons()
+{
+
 }
 
 // Quitter
