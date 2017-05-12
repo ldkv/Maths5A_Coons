@@ -57,9 +57,6 @@ Edge* getEdgefromVertexes(vector<Edge*> es, Vertex *p1, Vertex *p2)
 
 void createCube(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs)
 {
-	calcAlphaLoop();
-	calcAlphaKobbelt();
-
 	Vertex* p000 = new Vertex(0, 0, 0);
 	Vertex* p002 = new Vertex(0, 0, 2);
 	Vertex* p020 = new Vertex(0, 2, 0);
@@ -125,17 +122,19 @@ void createCube(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs)
 	addTriangle(p211, p202, p200, ts, es);
 }
 
-double alphaLoop[MAX_EDGES_ADJACENT];
+vector<double> alphaLoop = calcAlphaLoop();
 
-void calcAlphaLoop()
+vector<double> calcAlphaLoop()
 {
+	vector<double> alpha;
 	for (int n = 1; n < MAX_EDGES_ADJACENT; n++)
 	{
 		double n_inv = 1.0 / n;
 		double cos2 = 3.0 / 8.0 + 1.0 / 4.0 * cos(2*PI*n_inv);
 		cos2 *= cos2;
-		alphaLoop[n] = n_inv * (5.0 / 8.0 - cos2);
+		alpha.push_back(n_inv * (5.0 / 8.0 - cos2));
 	}
+	return alpha;
 }
 
 Vertex* getOtherVertexfromEdge(Vertex* v, Edge* e)
@@ -228,12 +227,14 @@ void Subdivision_Loop(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> 
 	oldEdgeSize = 0;
 }
 
-double alphaKobbelt[MAX_EDGES_ADJACENT];
+vector<double> alphaKobbelt = calcAlphaKobbelt();
 
-void calcAlphaKobbelt()
+vector<double> calcAlphaKobbelt()
 {
+	vector<double> alpha;
 	for (int n = 1; n < MAX_EDGES_ADJACENT; n++)
-		alphaKobbelt[n] = (4 - 2 * cos(2.0 * PI / n)) / 9.0;
+		alpha.push_back((4 - 2 * cos(2.0 * PI / n)) / 9.0);
+	return alpha;
 }
 
 Edge* newEdge(vector<Edge*> &es, Vertex* p1, Vertex* p2, Triangle* t)

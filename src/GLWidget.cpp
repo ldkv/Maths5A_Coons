@@ -24,9 +24,6 @@ GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent), m_theta(180.0f), m_
 	lights[1].iAmbiant = { 1.0,0.0,1.0 };
 	lights[1].iDiffuse = { 1.0,0.0,1.0 };
 
-	// Subdivision Loop - Kobbelt
-	createCube(ts, es, vs);
-	createCube(tsOri, esOri, vsOri);
 	pointsChaikin.push_back(vector<QVector3D>());
 	generateControlPointsTriangle();
 }
@@ -147,14 +144,14 @@ void GLWidget::drawScene()
 	if (showPts)
 	{
 		// Surbriller les points de raccordement
-		//drawPoints(points, { 0, 1.0, 0 }, 10);
+		drawPoints(points, { 0, 1.0, 0 }, 10);
 		drawMesh(tsOri, esOri, BLUE, 5);
-		//drawMesh(ts, es, WHITE, 20);
-		drawMesh(tsBezier, esBezier, WHITE, 20);
+		drawMesh(ts, es, WHITE, 20);
+		//drawMesh(tsBezier, esBezier, WHITE, 20);
 	}
 
-	drawFaces(cubeFaces);
-	drawFaces(dividedCube);
+	//drawFaces(cubeFaces);
+	//drawFaces(dividedCube);
 	//
 	//drawFaces(meshFaces);
 	if (showTexture) {
@@ -372,12 +369,23 @@ void GLWidget::createBezierTriangle(vector<Triangle*> &ts, vector<Edge*> &es, ve
 }
 
 // Réinitialiser le caméra au paramètres par défaut
-void GLWidget::subdivide()
+void GLWidget::subdivide(int choice)
 {
-	//Subdivision_Loop(ts, es, vs);
-	//Subdivision_Kobbelt(ts, es, vs);
-	Subdivision_Butterfly(ts, es, vs);
-	//Subdivision_Kobbelt(tsBezier, esBezier, vsBezier);
+	switch (choice)
+	{
+	case 1:
+		Subdivision_Loop(ts, es, vs);
+		break;
+	case 2:
+		Subdivision_Kobbelt(ts, es, vs);
+		//Subdivision_Kobbelt(tsBezier, esBezier, vsBezier);
+		break;
+	case 3:
+		Subdivision_Butterfly(ts, es, vs);
+		break;
+	default:
+		break;
+	}
 }
 
 void GLWidget::LoadGLTextures(const char * name)
@@ -996,9 +1004,10 @@ void GLWidget::subdivideCatmull()
 	meshFaces = subdivideC(meshFaces);
 }
 
-void GLWidget::generateCude()
+void GLWidget::generateCube()
 {
 	createCube(ts, es, vs);
+	createCube(tsOri, esOri, vsOri);
 }
 
 // Valider une courbe en cours de creation

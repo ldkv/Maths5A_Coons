@@ -71,11 +71,12 @@ public:
     QRadioButton *rbRandom;
     QGroupBox *groupRotation;
     QGridLayout *gridLayout_3;
+    QPushButton *buttonSubdivide;
+    QPushButton *buttonGenerateCube;
+    QRadioButton *rbButterfly;
     QRadioButton *rbKobbelt;
     QRadioButton *rbCatmull;
-    QPushButton *buttonSubdivide;
     QRadioButton *rbLoop;
-    QPushButton *buttonGenerateCube;
     QCheckBox *cbShowWireframe;
     QCheckBox *cbShowTexture;
     QCheckBox *cbShowPoints;
@@ -273,32 +274,37 @@ public:
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        buttonSubdivide = new QPushButton(groupRotation);
+        buttonSubdivide->setObjectName(QStringLiteral("buttonSubdivide"));
+
+        gridLayout_3->addWidget(buttonSubdivide, 4, 1, 1, 1);
+
+        buttonGenerateCube = new QPushButton(groupRotation);
+        buttonGenerateCube->setObjectName(QStringLiteral("buttonGenerateCube"));
+
+        gridLayout_3->addWidget(buttonGenerateCube, 3, 1, 1, 1);
+
+        rbButterfly = new QRadioButton(groupRotation);
+        rbButterfly->setObjectName(QStringLiteral("rbButterfly"));
+
+        gridLayout_3->addWidget(rbButterfly, 4, 0, 1, 1);
+
         rbKobbelt = new QRadioButton(groupRotation);
         rbKobbelt->setObjectName(QStringLiteral("rbKobbelt"));
 
-        gridLayout_3->addWidget(rbKobbelt, 2, 0, 1, 1);
+        gridLayout_3->addWidget(rbKobbelt, 1, 0, 1, 1);
 
         rbCatmull = new QRadioButton(groupRotation);
         rbCatmull->setObjectName(QStringLiteral("rbCatmull"));
         rbCatmull->setChecked(false);
 
-        gridLayout_3->addWidget(rbCatmull, 0, 0, 1, 1);
-
-        buttonSubdivide = new QPushButton(groupRotation);
-        buttonSubdivide->setObjectName(QStringLiteral("buttonSubdivide"));
-
-        gridLayout_3->addWidget(buttonSubdivide, 2, 1, 1, 1);
+        gridLayout_3->addWidget(rbCatmull, 1, 1, 1, 1);
 
         rbLoop = new QRadioButton(groupRotation);
         rbLoop->setObjectName(QStringLiteral("rbLoop"));
         rbLoop->setChecked(true);
 
-        gridLayout_3->addWidget(rbLoop, 1, 0, 1, 1);
-
-        buttonGenerateCube = new QPushButton(groupRotation);
-        buttonGenerateCube->setObjectName(QStringLiteral("buttonGenerateCube"));
-
-        gridLayout_3->addWidget(buttonGenerateCube, 1, 1, 1, 1);
+        gridLayout_3->addWidget(rbLoop, 3, 0, 1, 1);
 
 
         verticalLayout->addWidget(groupRotation);
@@ -483,11 +489,12 @@ public:
         laTimeCalcSurface->setText(QApplication::translate("Maths5A_CoonsClass", "0 us", 0));
         rbRandom->setText(QApplication::translate("Maths5A_CoonsClass", "Al\303\251atoire", 0));
         groupRotation->setTitle(QApplication::translate("Maths5A_CoonsClass", "Subdivision", 0));
+        buttonSubdivide->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
+        buttonGenerateCube->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Cube", 0));
+        rbButterfly->setText(QApplication::translate("Maths5A_CoonsClass", "Butterfly", 0));
         rbKobbelt->setText(QApplication::translate("Maths5A_CoonsClass", "Kobbelt", 0));
         rbCatmull->setText(QApplication::translate("Maths5A_CoonsClass", "Catmull-Clark", 0));
-        buttonSubdivide->setText(QApplication::translate("Maths5A_CoonsClass", "Subdiviser", 0));
         rbLoop->setText(QApplication::translate("Maths5A_CoonsClass", "Loop", 0));
-        buttonGenerateCube->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Cube", 0));
         cbShowWireframe->setText(QApplication::translate("Maths5A_CoonsClass", "Filaire", 0));
         cbShowTexture->setText(QApplication::translate("Maths5A_CoonsClass", "Texture", 0));
         cbShowPoints->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher les points", 0));
@@ -500,7 +507,7 @@ public:
         bColorS2->setText(QString());
         cbLight2->setText(QApplication::translate("Maths5A_CoonsClass", "Source 2", 0));
         bColorObj->setText(QApplication::translate("Maths5A_CoonsClass", "Couleur du patch", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Maths5A_CoonsClass", "1", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Maths5A_CoonsClass", "Subdivision", 0));
         groupBox->setTitle(QApplication::translate("Maths5A_CoonsClass", "Corner Cutting", 0));
         cbLine->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher lignes", 0));
         cbLineChaikin->setText(QApplication::translate("Maths5A_CoonsClass", "Afficher lignes (Chainkin)", 0));
@@ -509,7 +516,7 @@ public:
         buttonGenerateCoons->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Coons", 0));
         labelCoonsSmooth->setText(QApplication::translate("Maths5A_CoonsClass", "Degr\303\251 lissage", 0));
         buttonGenerateCoons4->setText(QApplication::translate("Maths5A_CoonsClass", "G\303\251n\303\251rer Coons (4)", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Maths5A_CoonsClass", "2", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Maths5A_CoonsClass", "Coons", 0));
         bResetCam->setText(QApplication::translate("Maths5A_CoonsClass", "R\303\251initialiser le cam\303\251ra", 0));
         bQuit->setText(QApplication::translate("Maths5A_CoonsClass", "Quitter", 0));
     } // retranslateUi
