@@ -40,7 +40,7 @@ struct Edge
 	Vertex* v2 = nullptr;
 	Triangle* t1 = nullptr;
 	Triangle* t2 = nullptr;
-	QVector3D edgePt;
+	Vertex* edgePt = new Vertex(0, 0, 0);
 
 	Edge(Vertex *p1, Vertex *p2)
 	{

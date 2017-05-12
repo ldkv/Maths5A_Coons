@@ -1030,6 +1030,7 @@ void GLWidget::generateCube()
 	resetData();
 	createCube(ts, es, vs);
 	createCube(tsOri, esOri, vsOri);
+	//Subdivision_Loop(ts, es, vs);
 }
 
 // Valider une courbe en cours de creation

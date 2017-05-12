@@ -71,20 +71,21 @@ void createCube(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs)
 	Vertex* p121 = new Vertex(1, 2, 1);
 	Vertex* p112 = new Vertex(1, 1, 2);
 	vs.push_back(p000);
-	vs.push_back(p002);
+	vs.push_back(p220);
 	vs.push_back(p020);
 	vs.push_back(p200);
+	vs.push_back(p110);
+
+	vs.push_back(p002);
 	vs.push_back(p202);
-	vs.push_back(p220);
 	vs.push_back(p222);
 	vs.push_back(p022);
-	vs.push_back(p110);
 	vs.push_back(p101);
 	vs.push_back(p011);
 	vs.push_back(p211);
 	vs.push_back(p121);
 	vs.push_back(p112);
-
+	
 	for each (Vertex* v in vs)
 	{
 		v->coord *= 10;
@@ -183,15 +184,16 @@ void Subdivision_Loop(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> 
 	// Calculer les edge points
 	for (int i = 0; i < es.size(); i++)
 	{
-		es[i]->edgePt = es[i]->v1->coord + es[i]->v2->coord;
+		es[i]->edgePt->coord = es[i]->v1->coord + es[i]->v2->coord;
 		if (es[i]->t1 == nullptr || es[i]->t2 == nullptr)
-			es[i]->edgePt = es[i]->edgePt / 2.0;
+			es[i]->edgePt->coord = es[i]->edgePt->coord / 2.0;
 		else
 		{
 			QVector3D vLeft = getOtherVertexfromTriangle(es[i], es[i]->t1)->coord;
 			QVector3D vRight = getOtherVertexfromTriangle(es[i], es[i]->t2)->coord;
-			es[i]->edgePt = 0.125 *(3 * es[i]->edgePt + vLeft + vRight);
+			es[i]->edgePt->coord = 0.125 *(3 * es[i]->edgePt->coord + vLeft + vRight);
 		}
+		vs.push_back(es[i]->edgePt);
 	}
 
 	int oldTriangleSize = ts.size();
@@ -199,12 +201,9 @@ void Subdivision_Loop(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> 
 	// Calculer les nouveaux triangles
 	for (int i = 0; i < oldTriangleSize; i++)
 	{
-		Vertex *eP0 = new Vertex(ts[i]->tEs[0]->edgePt);
-		Vertex *eP1 = new Vertex(ts[i]->tEs[1]->edgePt);
-		Vertex *eP2 = new Vertex(ts[i]->tEs[2]->edgePt);
-		vs.push_back(eP0);
-		vs.push_back(eP1);
-		vs.push_back(eP2);
+		Vertex *eP0 = ts[i]->tEs[0]->edgePt;
+		Vertex *eP1 = ts[i]->tEs[1]->edgePt;
+		Vertex *eP2 = ts[i]->tEs[2]->edgePt;
 		addTriangle(ts[i]->tVs[0], eP1, eP2, ts, es);
 		addTriangle(ts[i]->tVs[1], eP0, eP2, ts, es);
 		addTriangle(ts[i]->tVs[2], eP0, eP1, ts, es);
@@ -379,45 +378,45 @@ void Subdivision_Butterfly(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vert
 
 		if (testVL && testVR && testVLL && testVLR && testVRR && testVRL)
 		{
-			es[i]->edgePt = 0.5*(v1 + v2) + 0.125*(vL + vR) - 0.0625*(vLL + vLR + vRL + vRR);
+			es[i]->edgePt->coord = 0.5*(v1 + v2) + 0.125*(vL + vR) - 0.0625*(vLL + vLR + vRL + vRR);
 			continue;
 		}
 		if (testVL && testVR && testVRL && testVRR && testVLR && !testVLL)
 		{
-			es[i]->edgePt = 0.375*v1 + 0.625*v2 + 0.0625*vL + 0.1875*vR - 0.0625*(2 * vRR + vLR + vRL);
+			es[i]->edgePt->coord = 0.375*v1 + 0.625*v2 + 0.0625*vL + 0.1875*vR - 0.0625*(2 * vRR + vLR + vRL);
 			continue;
 		}
 		if (testVL && testVR && testVRL && testVRR && testVLL && !testVLR)
 		{
-			es[i]->edgePt = 0.375*v2 + 0.625*v1 + 0.0625*vL + 0.1875*vR - 0.0625*(2 * vRL + vLL + vRR);
+			es[i]->edgePt->coord = 0.375*v2 + 0.625*v1 + 0.0625*vL + 0.1875*vR - 0.0625*(2 * vRL + vLL + vRR);
 			continue;
 		}
 		if (testVL && testVR && testVLL && testVLR && testVRR && !testVRL)
 		{
-			es[i]->edgePt = 0.375*v1 + 0.625*v2 + 0.0625*vR + 0.1875*vL - 0.0625*(2 * vLR + vLL + vRR);
+			es[i]->edgePt->coord = 0.375*v1 + 0.625*v2 + 0.0625*vR + 0.1875*vL - 0.0625*(2 * vLR + vLL + vRR);
 			continue;
 		}
 		if (testVL && testVR && testVLL && testVLR && testVRL && !testVRR)
 		{
-			es[i]->edgePt = 0.375*v2 + 0.625*v1 + 0.0625*vR + 0.1875*vL - 0.0625*(2 * vLL + vLR + vRL);
+			es[i]->edgePt->coord = 0.375*v2 + 0.625*v1 + 0.0625*vR + 0.1875*vL - 0.0625*(2 * vLL + vLR + vRL);
 			continue;
 		}
 		if (testVL && testVR && testVLL && testVLR && !testVRL && !testVRR)
 		{
-			es[i]->edgePt = 0.5*(v1 + v2) + 0.25*vL - 0.125*(vLL + vLR);
+			es[i]->edgePt->coord = 0.5*(v1 + v2) + 0.25*vL - 0.125*(vLL + vLR);
 			continue;
 		}
 		if (testVL && testVR && testVRL && testVRR && !testVLL && !testVLR)
 		{
-			es[i]->edgePt = 0.5*(v1 + v2) + 0.25*vR - 0.125*(vRL + vRR);
+			es[i]->edgePt->coord = 0.5*(v1 + v2) + 0.25*vR - 0.125*(vRL + vRR);
 			continue;
 		}
 		if (testVL && testVR)
 		{
-			es[i]->edgePt = 0.5*(v1 + v2);
+			es[i]->edgePt->coord = 0.5*(v1 + v2);
 			continue;
 		}
-		es[i]->edgePt = 0.5*(v1 + v2);
+		es[i]->edgePt->coord = 0.5*(v1 + v2);
 		/*if (testVR && testVRL && testVRR)
 		{
 			vtemp = getOtherVertexfromTriangle(es[i], es[i]->t2);
@@ -440,17 +439,22 @@ void Subdivision_Butterfly(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vert
 
 	}
 
+	for each (Edge* e in es)
+	{
+		vs.push_back(e->edgePt);
+	}
+
 	int oldTriangleSize = ts.size();
 	int oldEdgeSize = es.size();
 	// Calculer les nouveaux triangles
 	for (int i = 0; i < oldTriangleSize; i++)
 	{
-		Vertex *eP0 = new Vertex(ts[i]->tEs[0]->edgePt);
-		Vertex *eP1 = new Vertex(ts[i]->tEs[1]->edgePt);
-		Vertex *eP2 = new Vertex(ts[i]->tEs[2]->edgePt);
-		vs.push_back(eP0);
+		Vertex *eP0 = ts[i]->tEs[0]->edgePt;
+		Vertex *eP1 = ts[i]->tEs[1]->edgePt;
+		Vertex *eP2 = ts[i]->tEs[2]->edgePt;
+		/*vs.push_back(eP0);
 		vs.push_back(eP1);
-		vs.push_back(eP2);
+		vs.push_back(eP2);*/
 		addTriangle(ts[i]->tVs[0], eP1, eP2, ts, es);
 		addTriangle(ts[i]->tVs[1], eP0, eP2, ts, es);
 		addTriangle(ts[i]->tVs[2], eP0, eP1, ts, es);
