@@ -15,7 +15,11 @@
 
 using namespace std;
 
-#define POINT_SIZE 10
+#define POINT_SIZE	10
+#define RED			QVector3D(1,0,0)
+#define GREEN		QVector3D(0,1,0)
+#define BLUE		QVector3D(0,0,1)
+#define WHITE		QVector3D(1,1,1)
 
 // Structure pour la lumière
 struct Light
@@ -60,6 +64,8 @@ signals:
 
 public slots:
 	void timeOutSlot();
+	void setDegreeU(int m) { degU = m; generateControlPoints(); }
+	void setDegreeV(int n) { degV = n; generateControlPoints(); }
 	void setJoinOrder(int j) { joinOrder = j; }
 	void setGrid(int g) { showGrid = g == 0 ? false : true; }
 	void setShowPts(int s) { showPts = s == 0 ? false : true; }
@@ -99,21 +105,23 @@ private:
 	// update chaikin points
 	vector<QVector3D> getChaikinPoints(vector<QVector3D> pts, int degree);
 	vector<vector<QVector3D>> getAllChaikinPoints(vector<QVector3D> pts, int degree);
+	vector<vector<QVector3D>> generateCoonsSurface(vector<QVector3D> curve1, vector<QVector3D> curve2, int degree);
 	// Textures
 	void GLWidget::LoadGLTextures(const char * name);
 	void generateControlPoints();
 
 	// Subdivision Loop - Kobbelt
-	vector<Triangle*> ts; 
-	vector<Edge*> es;
-	vector<Vertex*> vs;
+	vector<Triangle*> ts, tsOri; 
+	vector<Edge*> es, esOri;
+	vector<Vertex*> vs, vsOri;
 	void drawMesh(vector<Triangle*>, vector<Edge*>, QVector3D, int);
 
 	// Ajout des points
 	QPoint mousePos;
 	vector<QVector3D> points;
 	vector<vector<QVector3D>> pointsChaikin;
-	vector<int> chaikinMaxPointIndice;
+	vector<int> curveMaxPointIndice;
+	vector<int> coonCurveIndice;
 	int pointSelected = -1;
 	bool needUpdate = false;
 

@@ -60,6 +60,7 @@ struct Triangle
 {
 	vector<Vertex*> tVs;
 	vector<Edge*> tEs;
+	Vertex* barycenter;
 	
 	Triangle(Vertex *p1, Vertex *p2, Vertex *p3)
 	{
@@ -70,7 +71,15 @@ struct Triangle
 	}
 };
 
+struct Subdivision
+{
+	vector<Triangle*> ts;
+	vector<Edge*> es;
+	vector<Vertex*> vs;
+};
+
 void calcAlphaLoop();
+void calcAlphaKobbelt();
 void createCube(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);
 void addTriangle(Vertex*, Vertex*, Vertex*, vector<Triangle*>&, vector<Edge*>&);
 Edge* getEdgefromVertexes(vector<Edge*>, Vertex*, Vertex*);
@@ -78,3 +87,4 @@ Edge* updateEdge(vector<Edge*>&, Vertex*, Vertex*, Triangle*);
 Vertex* getOtherVertexfromEdge(Vertex*, Edge*);
 Vertex* getOtherVertexfromTriangle(Edge*, Triangle*);
 void Subdivision_Loop(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);
+void Subdivision_Kobbelt(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);
