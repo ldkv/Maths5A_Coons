@@ -137,18 +137,20 @@ void GLWidget::drawScene()
 	vector<QVector3D> ptlight = { lights[0].posLight };
 	vector<QVector3D> ptlight2 = { lights[1].posLight };
 	// Dessin de la représentation des lights (points)
-	//drawPoints(ptlight, lights[0].iAmbiant, 20);
-	//drawPoints(ptlight2, lights[1].iAmbiant, 20);
+	drawPoints(ptlight, lights[0].iAmbiant, 20);
+	drawPoints(ptlight2, lights[1].iAmbiant, 20);
 
 	// Affichage des points de controle et des vertex du patch
 	if (showPts)
 	{
 		// Surbriller les points de raccordement
 		drawPoints(points, { 0, 1.0, 0 }, 10);
-		drawMesh(tsOri, esOri, BLUE, 5);
-		drawMesh(ts, es, WHITE, 20);
 		//drawMesh(tsBezier, esBezier, WHITE, 20);
 	}
+
+	// Subdivision
+	drawMesh(tsOri, esOri, BLUE, 5);
+	drawMesh(ts, es, WHITE, 20);
 
 	//drawFaces(cubeFaces);
 	//drawFaces(dividedCube);
@@ -337,9 +339,6 @@ void addTriangleCustom(Vertex* p1, Vertex* p2, Vertex* p3, vector<Triangle*> &ts
 
 void GLWidget::createBezierTriangle(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs, vector<vector<Point>> points)
 {
-	calcAlphaLoop();
-	calcAlphaKobbelt();
-
 	for (int i = 0; i < points.size()-1; i++)
 	{
 
@@ -966,6 +965,26 @@ void GLWidget::resetData()
 	coonCurveIndice.clear();
 	degU = 0;
 	degV = 0;
+
+	for each (Triangle* t in ts)
+		delete t;
+	for each (Edge* e in es)
+		delete e;
+	for each (Vertex* v in vs)
+		delete v;
+
+	for each (Triangle* t in tsOri)
+		delete t;
+	for each (Edge* e in esOri)
+		delete e;
+	for each (Vertex* v in vsOri)
+		delete v;
+	ts.clear();
+	es.clear();
+	vs.clear();
+	tsOri.clear();
+	esOri.clear();
+	vsOri.clear();
 }
 
 void GLWidget::createCubeAlt() {
@@ -1006,6 +1025,7 @@ void GLWidget::subdivideCatmull()
 
 void GLWidget::generateCube()
 {
+	resetData();
 	createCube(ts, es, vs);
 	createCube(tsOri, esOri, vsOri);
 }
