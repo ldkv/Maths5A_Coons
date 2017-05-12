@@ -602,8 +602,8 @@ void GLWidget::processCoon4() {
 			curveMaxPointIndice.push_back(points.size() - 1);
 			pointsChaikin.push_back(vector<QVector3D>());
 
-			int degree = 4;
-			//generateCoonsSurface(pointsChaikin[pointsChaikin.size() - 5], pointsChaikin[pointsChaikin.size() - 4], pointsChaikin[pointsChaikin.size() - 3], pointsChaikin[pointsChaikin.size() - 2], coonsDegree);
+			vector<vector<QVector3D>> pointsTmp = generateCoonsSurface(pointsChaikin[pointsChaikin.size() - 5], pointsChaikin[pointsChaikin.size() - 4], pointsChaikin[pointsChaikin.size() - 3], pointsChaikin[pointsChaikin.size() - 2], coonsDegree);
+			pointsChaikin.insert(pointsChaikin.end(), pointsTmp.begin(), pointsTmp.end());
 
 			coonsState = 0;
 		}
@@ -900,13 +900,12 @@ void GLWidget::generateCoons()
 	// car lorsqu'on press enter pour valider une courbe, on ajoute deja la prochaine courbe (vide), voir "case Qt::Key_Return"
 	if (pointsChaikin.size() > 2)
 	{
-		int degree = 4; // nombre de courbe intermédiaire généré
 		int maxSize = pointsChaikin.size() - 1;
-		vector<vector<QVector3D>> pointsTmp = generateCoonsSurface(pointsChaikin[maxSize - 2], pointsChaikin[maxSize - 1], degree);
+		vector<vector<QVector3D>> pointsTmp = generateCoonsSurface(pointsChaikin[maxSize - 2], pointsChaikin[maxSize - 1], coonsDegree);
 		pointsChaikin.insert(pointsChaikin.end(), pointsTmp.begin(), pointsTmp.end());
 
 		coonCurveIndice.push_back(maxSize - 2);
-		coonCurveIndice.push_back(maxSize - 1 + degree);
+		coonCurveIndice.push_back(maxSize - 1 + coonsDegree);
 		pointsChaikin.push_back(vector<QVector3D>());
 
 		qDebug() << "Generate Coons : " << showLine;
