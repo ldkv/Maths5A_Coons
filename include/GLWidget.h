@@ -78,6 +78,7 @@ public slots:
 	void displayLine(int);
 	void displayLineChaikin(int);
 	void setChaikinDegree(int);
+	void setCoonsDegree(int);
 	// Réinitialiser les données
 	void resetData();
 	// Réinitialiser le caméra à la vue par défaut
@@ -167,8 +168,8 @@ private:
 	// Les paramètres de l'UI
 	int modeGenPts = 2;		// 1 pour Aléatoire, 2 pour réglage de l'hauteur
 	int modeRotation = 0;	// 0 pour Objet, 1 pour Caméra
-	int degU =5;
-	int degV = 5;
+	int degU =3;
+	int degV = 3;
 	int precision = 10;
 	int joinOrder = 0;		// Raccordement 0-2
 	int depthBetweenPoints = 4;
@@ -188,4 +189,6 @@ private:
 
 	void drawFaces(vector<Face> faces);
 	void drawMesh(vector<Face> faces);
+	void generateControlPointsTriangle();
+	void createBezierTriangle(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs, vector<vector<Point>> points);
 };

@@ -5,6 +5,7 @@
 
 #define MAX_EDGES_ADJACENT 100
 #define PI 3.14159265358979
+#define MAX_COORD 100000
 
 using namespace std;
 
@@ -88,3 +89,4 @@ Vertex* getOtherVertexfromEdge(Vertex*, Edge*);
 Vertex* getOtherVertexfromTriangle(Edge*, Triangle*);
 void Subdivision_Loop(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);
 void Subdivision_Kobbelt(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);
+void Subdivision_Butterfly(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);
