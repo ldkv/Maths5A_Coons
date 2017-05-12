@@ -719,9 +719,10 @@ void GLWidget::processCoon4() {
 			curveMaxPointIndice.push_back(points.size() - 1);
 			pointsChaikin.push_back(vector<QVector3D>());
 
+			
 			vector<vector<QVector3D>> pointsTmp = generateCoonsSurface(pointsChaikin[pointsChaikin.size() - 5], pointsChaikin[pointsChaikin.size() - 4], pointsChaikin[pointsChaikin.size() - 3], pointsChaikin[pointsChaikin.size() - 2], coonsDegree);
 			pointsChaikin.insert(pointsChaikin.end(), pointsTmp.begin(), pointsTmp.end());
-
+			
 			coonsState = 0;
 		}
 
@@ -956,6 +957,7 @@ void GLWidget::resetData()
 	pointsChaikin.push_back(vector<QVector3D>());
 	curveMaxPointIndice.clear();
 	coonCurveIndice.clear();
+	coonsState = 0;
 	degU = 0;
 	degV = 0;
 }
