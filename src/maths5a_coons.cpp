@@ -32,7 +32,7 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	//Courbes / Coons
 	connect(ui.buttonCreateCurve, SIGNAL(clicked()), glScene, SLOT(validateCurve()));
 	connect(ui.buttonGenerateCoons, SIGNAL(clicked()), glScene, SLOT(generateCoons()));
-	connect(ui.buttonGenerateCoons4, SIGNAL(clicked()), glScene, SLOT(generateCoons()));
+	connect(ui.buttonGenerateCoons4, SIGNAL(clicked()), glScene, SLOT(processCoon4()));
 	//generation cube
 	connect(ui.buttonGenerateCube, SIGNAL(clicked()), this, SLOT(generateCube()));
 	// Interface de Subdivision
@@ -54,6 +54,7 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	connect(ui.cbLine, SIGNAL(stateChanged(int)), glScene, SLOT(displayLine(int)));
 	connect(ui.cbLineChaikin, SIGNAL(stateChanged(int)), glScene, SLOT(displayLineChaikin(int)));
 	connect(ui.spinDegreeCurve, SIGNAL(valueChanged(int)), glScene, SLOT(setChaikinDegree(int)));
+	connect(ui.spinDegreeCoons, SIGNAL(valueChanged(int)), glScene, SLOT(setCoonsDegree(int)));
 	// Définir la couleur des boutons et leur signal
 	QColor col = convertColor(glScene->objectColor);
 	QString qss = QString("background-color: %1").arg(col.name());

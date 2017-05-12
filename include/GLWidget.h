@@ -78,6 +78,7 @@ public slots:
 	void displayLine(int);
 	void displayLineChaikin(int);
 	void setChaikinDegree(int);
+	void setCoonsDegree(int);
 	// Réinitialiser les données
 	void resetData();
 	// Réinitialiser le caméra à la vue par défaut

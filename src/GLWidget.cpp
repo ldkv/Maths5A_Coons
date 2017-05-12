@@ -607,6 +607,8 @@ void GLWidget::processCoon4() {
 
 			coonsState = 0;
 		}
+
+		qDebug() << "Generate Coons";
 	}
 }
 
@@ -890,7 +892,7 @@ void GLWidget::validateCurve()
 		curveMaxPointIndice.push_back(points.size() - 1);
 		pointsChaikin.push_back(vector<QVector3D>());
 
-		qDebug() << "Validate Curve " << showLine;
+		qDebug() << "Validate Curve ";
 	}
 }
 
@@ -909,7 +911,7 @@ void GLWidget::generateCoons()
 		coonCurveIndice.push_back(maxSize - 1 + degree);
 		pointsChaikin.push_back(vector<QVector3D>());
 
-		qDebug() << "Generate Coons : " << showLine;
+		qDebug() << "Generate Coons";
 	}
 }
 
@@ -938,4 +940,10 @@ void GLWidget::setChaikinDegree(int val)
 {
 	chaikinDegree = val;
 	qDebug() << "Chainkin Degree : " << val;
+}
+
+void GLWidget::setCoonsDegree(int val)
+{
+	coonsDegree = val;
+	qDebug() << "Coons Degree : " << val;
 }
