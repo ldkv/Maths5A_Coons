@@ -14,7 +14,11 @@
 
 using namespace std;
 
-#define POINT_SIZE 10
+#define POINT_SIZE	10
+#define RED			QVector3D(1,0,0)
+#define GREEN		QVector3D(0,1,0)
+#define BLUE		QVector3D(0,0,1)
+#define WHITE		QVector3D(1,1,1)
 
 // Structure pour la lumière
 struct Light
@@ -99,9 +103,9 @@ private:
 	void GLWidget::LoadGLTextures(const char * name);
 
 	// Subdivision Loop - Kobbelt
-	vector<Triangle*> ts; 
-	vector<Edge*> es;
-	vector<Vertex*> vs;
+	vector<Triangle*> ts, tsOri; 
+	vector<Edge*> es, esOri;
+	vector<Vertex*> vs, vsOri;
 	void drawMesh(vector<Triangle*>, vector<Edge*>, QVector3D, int);
 
 	// Ajout des points

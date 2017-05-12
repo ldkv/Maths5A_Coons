@@ -58,6 +58,7 @@ Edge* getEdgefromVertexes(vector<Edge*> es, Vertex *p1, Vertex *p2)
 void createCube(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs)
 {
 	calcAlphaLoop();
+	calcAlphaKobbelt();
 
 	Vertex* p000 = new Vertex(0, 0, 0);
 	Vertex* p002 = new Vertex(0, 0, 2);
@@ -141,8 +142,7 @@ Vertex* getOtherVertexfromEdge(Vertex* v, Edge* e)
 {
 	if (e->v1 == v)
 		return e->v2;
-	else
-		return e->v1;
+	return e->v1;
 }
 
 Vertex* getOtherVertexfromTriangle(Edge* e, Triangle* t)
@@ -170,9 +170,7 @@ void Subdivision_Loop(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> 
 	{
 		es[i]->edgePt = es[i]->v1->coord + es[i]->v2->coord;
 		if (es[i]->t2 == nullptr)
-		{
 			es[i]->edgePt = es[i]->edgePt / 2.0;
-		}
 		else
 		{
 			QVector3D vLeft = getOtherVertexfromTriangle(es[i], es[i]->t1)->coord;
@@ -225,4 +223,100 @@ void Subdivision_Loop(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> 
 	for (int i = 0; i < oldTriangleSize; i++)
 		delete ts[i];
 	ts.erase(ts.begin(), ts.begin() + oldTriangleSize);
+	//oldEdgeSize = 0;
+}
+
+double alphaKobbelt[MAX_EDGES_ADJACENT];
+
+void calcAlphaKobbelt()
+{
+	for (int n = 1; n < MAX_EDGES_ADJACENT; n++)
+		alphaKobbelt[n] = (4 - 2 * cos(2.0 * PI / n)) / 9.0;
+}
+
+Edge* newEdge(vector<Edge*> &es, Vertex* p1, Vertex* p2, Triangle* t)
+{
+	Edge *e = new Edge(p1, p2);
+	e->addTriangle(t);
+	e->v1->vEs.push_back(e);
+	e->v2->vEs.push_back(e);
+	es.push_back(e);
+	return e;
+}
+
+void addTriangleWithEdge(Vertex* p1, Vertex* p2, Vertex* p3, vector<Triangle*> &ts, vector<Edge*> &es)
+{
+	Triangle* t = new Triangle(p1, p2, p3);
+	t->tEs.push_back(newEdge(es, p2, p3, t));
+	t->tEs.push_back(updateEdge(es, p3, p1, t));
+	t->tEs.push_back(updateEdge(es, p1, p2, t));
+	ts.push_back(t);
+}
+
+void Subdivision_Kobbelt(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs)
+{
+	// Calculer des nouveaux vertexes
+	vector<QVector3D> vtemp;
+	for (int i = 0; i < vs.size(); i++)
+	{
+		int n = vs[i]->vEs.size();
+		QVector3D somme(0, 0, 0);
+		for each (Edge* e in vs[i]->vEs)
+			somme += getOtherVertexfromEdge(vs[i], e)->coord;
+
+		vtemp.push_back((1 - alphaKobbelt[n]) * vs[i]->coord + alphaKobbelt[n] * somme / n);
+	}
+
+	for each (Triangle* t in ts)
+	{
+		t->barycenter = new Vertex((t->tVs[0]->coord + t->tVs[1]->coord + t->tVs[2]->coord) / 3.0);
+		vs.push_back(t->barycenter);
+	}
+
+	for (int i = 0; i < vtemp.size(); i++)
+		vs[i]->coord = vtemp[i];
+
+	int oldTriangleSize = ts.size();
+	int oldEdgeSize = es.size();
+	// Calculer les nouveaux triangles
+	for (int i = 0; i < oldTriangleSize; i++)
+	{
+		for each (Edge* e in ts[i]->tEs)
+		{
+			if (e->t1 != nullptr && e->t2 != nullptr)
+			{
+				if (e->t1 != ts[i])
+				{
+					addTriangle(ts[i]->barycenter, e->t1->barycenter, e->v1, ts, es);
+					addTriangle(ts[i]->barycenter, e->t1->barycenter, e->v2, ts, es);
+				}
+				else
+				{
+					addTriangle(ts[i]->barycenter, e->t2->barycenter, e->v1, ts, es);
+					addTriangle(ts[i]->barycenter, e->t2->barycenter, e->v2, ts, es);
+				}
+			}
+			else if (e->t1 != nullptr || e->t2 != nullptr)
+			{
+				addTriangleWithEdge(ts[i]->barycenter, e->v1, e->v2, ts, es);
+			}
+			e->t1 = nullptr;
+			e->t2 = nullptr;
+		}
+	}
+
+	// Supprimer les ancients edges
+	for (int i = 0; i < oldEdgeSize; i++)
+	{
+		removeEdgefromVertex(es[i], es[i]->v1);
+		removeEdgefromVertex(es[i], es[i]->v2);
+		delete es[i];
+	}
+	es.erase(es.begin(), es.begin() + oldEdgeSize);
+
+	// Supprimer les ancients triangles
+	for (int i = 0; i < oldTriangleSize; i++)
+		delete ts[i];
+	ts.erase(ts.begin(), ts.begin() + oldTriangleSize);
+	oldEdgeSize = 0;
 }

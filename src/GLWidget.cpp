@@ -26,6 +26,7 @@ GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent), m_theta(180.0f), m_
 
 	// Subdivision Loop - Kobbelt
 	createCube(ts, es, vs);
+	createCube(tsOri, esOri, vsOri);
 	pointsChaikin.push_back(vector<QVector3D>());
 }
 
@@ -125,7 +126,8 @@ void GLWidget::drawScene()
 	{
 		// Surbriller les points de raccordement
 		drawPoints(points, { 0, 1.0, 0 }, 10);
-		drawMesh(ts, es, { 1.0, 0, 0 }, 20);
+		drawMesh(tsOri, esOri, BLUE, 5);
+		drawMesh(ts, es, WHITE, 20);
 	}
 }
 
@@ -141,7 +143,7 @@ void GLWidget::drawMesh(vector<Triangle*> ts, vector<Edge*> es, QVector3D color,
 			glVector3D(t->v3->coord, true);
 		glEnd();
 		*/
-		glVector3D({0,0,1}, false);
+		glVector3D(color, false);
 		glBegin(GL_LINE_LOOP);
 			for each (Vertex* v in t->tVs)
 				glVector3D(v->coord, true);
@@ -160,7 +162,8 @@ void GLWidget::drawMesh(vector<Triangle*> ts, vector<Edge*> es, QVector3D color,
 // Réinitialiser le caméra au paramètres par défaut
 void GLWidget::subdivide()
 {
-	Subdivision_Loop(ts, es, vs);
+	//Subdivision_Loop(ts, es, vs);
+	Subdivision_Kobbelt(ts, es, vs);
 }
 
 void GLWidget::LoadGLTextures(const char * name)
