@@ -79,8 +79,8 @@ struct Subdivision
 	vector<Vertex*> vs;
 };
 
-void calcAlphaLoop();
-void calcAlphaKobbelt();
+vector<double> calcAlphaLoop();
+vector<double> calcAlphaKobbelt();
 void createCube(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);
 void addTriangle(Vertex*, Vertex*, Vertex*, vector<Triangle*>&, vector<Edge*>&);
 Edge* getEdgefromVertexes(vector<Edge*>, Vertex*, Vertex*);

@@ -70,7 +70,7 @@
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
-         <string>1</string>
+         <string>Subdivision</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -229,14 +229,35 @@
               <string>Subdivision</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
-              <item row="2" column="0">
+              <item row="4" column="1">
+               <widget class="QPushButton" name="buttonSubdivide">
+                <property name="text">
+                 <string>Subdiviser</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QPushButton" name="buttonGenerateCube">
+                <property name="text">
+                 <string>Générer Cube</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QRadioButton" name="rbButterfly">
+                <property name="text">
+                 <string>Butterfly</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
                <widget class="QRadioButton" name="rbKobbelt">
                 <property name="text">
                  <string>Kobbelt</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
+              <item row="1" column="1">
                <widget class="QRadioButton" name="rbCatmull">
                 <property name="text">
                  <string>Catmull-Clark</string>
@@ -246,27 +267,13 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QPushButton" name="buttonSubdivide">
-                <property name="text">
-                 <string>Subdiviser</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
+              <item row="3" column="0">
                <widget class="QRadioButton" name="rbLoop">
                 <property name="text">
                  <string>Loop</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QPushButton" name="buttonGenerateCube">
-                <property name="text">
-                 <string>Générer Cube</string>
                 </property>
                </widget>
               </item>
@@ -378,7 +385,7 @@
        </widget>
        <widget class="QWidget" name="tab_2">
         <attribute name="title">
-         <string>2</string>
+         <string>Coons</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
