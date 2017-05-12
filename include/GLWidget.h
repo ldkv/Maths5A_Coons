@@ -84,9 +84,9 @@ public slots:
 	// Réinitialiser le caméra à la vue par défaut
 	void resetCamera();
 	// Exécuter la subdivision
-	void subdivide();
+	void subdivide(int);
 	void createCubeAlt();
-	void generateCude();
+	void generateCube();
 	void subdivideCatmull();
 	void validateCurve();
 	void generateCoons();

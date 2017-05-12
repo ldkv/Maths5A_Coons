@@ -5,6 +5,7 @@
 
 #define MAX_EDGES_ADJACENT 100
 #define PI 3.14159265358979
+#define MAX_COORD 100000
 
 using namespace std;
 
@@ -78,8 +79,8 @@ struct Subdivision
 	vector<Vertex*> vs;
 };
 
-void calcAlphaLoop();
-void calcAlphaKobbelt();
+vector<double> calcAlphaLoop();
+vector<double> calcAlphaKobbelt();
 void createCube(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);
 void addTriangle(Vertex*, Vertex*, Vertex*, vector<Triangle*>&, vector<Edge*>&);
 Edge* getEdgefromVertexes(vector<Edge*>, Vertex*, Vertex*);
@@ -88,3 +89,4 @@ Vertex* getOtherVertexfromEdge(Vertex*, Edge*);
 Vertex* getOtherVertexfromTriangle(Edge*, Triangle*);
 void Subdivision_Loop(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);
 void Subdivision_Kobbelt(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);
+void Subdivision_Butterfly(vector<Triangle*>&, vector<Edge*>&, vector<Vertex*>&);

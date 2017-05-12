@@ -146,34 +146,39 @@ void Maths5A_Coons::generateCube()
 		glScene->createCubeAlt();
 		qDebug() << "Catmull Clark Generer Cube";
 	}
-	else if (ui.rbLoop->isChecked())
+	else
 	{
-		glScene->generateCude();
+		glScene->generateCube();
 		qDebug() << "Loop Generer Cube";
-	}
-	else if (ui.rbKobbelt->isChecked())
-	{
-		qDebug() << "Kobbelt Generer Cube";
 	}
 }
 
 // Applique la subdivision
 void Maths5A_Coons::subdivide()
 {
+	int choice = -1;
 	if (ui.rbCatmull->isChecked())
 	{
 		glScene->subdivideCatmull();
 		qDebug() << "Catmull Clark Subdivision";
+		return;
 	}
 	else if (ui.rbLoop->isChecked())
 	{
-		glScene->subdivide();
+		choice = 1;
 		qDebug() << "Loop Subdivision";
 	}
 	else if (ui.rbKobbelt->isChecked())
 	{
-		qDebug() << "Loop Subdivision";
+		choice = 2;
+		qDebug() << "Subdivision Kobbelt";
 	}
+	else if (ui.rbButterfly->isChecked())
+	{
+		choice = 3;
+		qDebug() << "Subdivision Kobbelt";
+	}
+	glScene->subdivide(choice);
 }
 
 // Quitter
