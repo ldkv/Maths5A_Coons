@@ -23,9 +23,6 @@ GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent), m_theta(180.0f), m_
 	lights[1].posLight = { -100, 150, 150 };
 	lights[1].iAmbiant = { 1.0,0.0,1.0 };
 	lights[1].iDiffuse = { 1.0,0.0,1.0 };
-
-	pointsChaikin.push_back(vector<QVector3D>());
-	generateControlPointsTriangle();
 }
 
 // A la suppression du programme
@@ -72,12 +69,17 @@ void GLWidget::initializeGL()
 	// Chargement de la texture
 	LoadGLTextures("texture.jpg");
 
+	// Subdivision Loop - Kobbelt
+	createCube(ts, es, vs);
+	createCube(tsOri, esOri, vsOri);
+	createCubeAlt();
+
+	pointsChaikin.push_back(vector<QVector3D>());
+
 	generateControlPoints();
-	//createCubeAlt();
+	generateControlPointsTriangle();
 	//dividedCube = subdivideC(cubeFaces);
 	//dividedCube = subdivideC(dividedCube);
-	//dividedCube = subdivideC(dividedCube);
-	//meshFaces = subdivideC(meshFaces);
 	//meshFaces = subdivideC(meshFaces);
 }
 
@@ -145,25 +147,29 @@ void GLWidget::drawScene()
 	{
 		// Surbriller les points de raccordement
 		drawPoints(points, { 0, 1.0, 0 }, 10);
-		//drawMesh(tsBezier, esBezier, WHITE, 20);
 	}
 
 	// Subdivision
 	drawMesh(tsOri, esOri, BLUE, 5);
 	drawMesh(ts, es, WHITE, 20);
+	//drawMesh(tsBezier, esBezier, WHITE, 20);
 
 	//drawFaces(cubeFaces);
 	//drawFaces(dividedCube);
-	//
-	//drawFaces(meshFaces);
-	if (showTexture) {
-		//drawMesh(meshFaces);
-	}
-	/*drawFaces(meshFaces);
 	if (showTexture) {
 		drawMesh(meshFaces);
-	}*/
+	}
+
 	//drawPoints(controlPoints, { 0, 1.0, 0 }, 10);
+
+	if (showLine) {
+		// Surbriller les lines
+		drawLines(points, { 0, 1.0, 0 }, 4);
+	}
+	if (showChaikin)
+	{
+		drawChaikinLine({ 0.5f, 0.7f, 0.9f }, 4);
+	}
 }
 
 void GLWidget::drawMesh(vector<Triangle*> ts, vector<Edge*> es, QVector3D color, int ptSize)
@@ -182,15 +188,6 @@ void GLWidget::drawMesh(vector<Triangle*> ts, vector<Edge*> es, QVector3D color,
 			for each (Vertex* v in t->tVs)
 				glVector3D(v->coord, true);
 		glEnd();
-	}
-
-	if (showLine) {
-		// Surbriller les lines
-		drawLines(points, { 0, 1.0, 0 }, 4);
-	}
-	if (showChaikin)
-	{
-		drawChaikinLine({ 0.5f, 0.7f, 0.9f }, 4);
 	}
 }
 
@@ -339,6 +336,12 @@ void addTriangleCustom(Vertex* p1, Vertex* p2, Vertex* p3, vector<Triangle*> &ts
 
 void GLWidget::createBezierTriangle(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs, vector<vector<Point>> points)
 {
+	calcAlphaLoop();
+	calcAlphaKobbelt();
+	ts.clear();
+	es.clear();
+	vs.clear();
+
 	for (int i = 0; i < points.size()-1; i++)
 	{
 
@@ -370,6 +373,9 @@ void GLWidget::createBezierTriangle(vector<Triangle*> &ts, vector<Edge*> &es, ve
 // Réinitialiser le caméra au paramètres par défaut
 void GLWidget::subdivide(int choice)
 {
+	//Subdivision_Loop(ts, es, vs);
+	Subdivision_Kobbelt(ts, es, vs);
+	//Subdivision_Kobbelt(tsBezier, esBezier, vsBezier);
 	switch (choice)
 	{
 	case 1:
@@ -408,16 +414,74 @@ void GLWidget::LoadGLTextures(const char * name)
 
 void GLWidget::drawMesh(vector<Face> faces)
 {
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texture[0]);
 
 	for (int i = 0; i < faces.size(); i++)
 	{
-		//for (int j = 0; j <faces[i].points.size() - 3; j++)
-		//{
-			// Coordonnées des points avec coordonnées de la texture
-			//glBegin(GL_QUADS);
+		GLfloat tempVector3D[3];
+		QVector3D light1 = { 0.0f, 0.f, 0.f };
+		QVector3D light2 = { 0.0f, 0.f, 0.f };
+		if (showLight1)
+			light1 = processLighting(faces[i].points[0].coord, faces[i].points[1].coord, faces[i].points[2].coord, faces[i].points[3].coord, lights[0]);
+		if (showLight2)
+			light2 = processLighting(faces[i].points[0].coord, faces[i].points[1].coord, faces[i].points[2].coord, faces[i].points[3].coord, lights[1]);
+		if (showLight1 || showLight2)
+			glVector3D(light1 + light2, false);
+		else
+			glVector3D(objectColor, false);
+
+			for (int j = 0; j < faces[i].points.size() - 3; j++)
+			{
+				// Coordonnées des points avec coordonnées de la texture
+				glBegin(GL_QUADS);
+				glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[j].coord, true);
+				glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[j + 1].coord, true);
+				glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[j + 2].coord, true);
+				glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[j + 3].coord, true);
+				glEnd();
+				glBegin(GL_QUADS);
+				glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[j].coord, true);
+				glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[j + 3].coord, true);
+				glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[j + 2].coord, true);
+				glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[j + 1].coord, true);
+				glEnd();
+			}
+	}
+		glDisable(GL_TEXTURE_2D);
+}
+
+void GLWidget::drawMeshCustom(vector<Face> faces)
+{
+	if (showTexture) {
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texture[0]);
+	}
+
+	for (int i = 0; i < faces.size(); i++)
+	{
+		GLfloat tempVector3D[3];
+		if (showWireframe)
+		{
+			float white[] = { 1.0, 0.0, 1.0 };
+			glColor3fv(white);
+			glBegin(GL_LINE_LOOP);
+		}
+		else
+		{
+			QVector3D light1 = { 0.0f, 0.f, 0.f };
+			QVector3D light2 = { 0.0f, 0.f, 0.f };
+			if (showLight1)
+				light1 = processLighting(faces[i].points[0].coord, faces[i].points[1].coord, faces[i].points[2].coord, faces[i].points[3].coord, lights[0]);
+			if (showLight2)
+				light2 = processLighting(faces[i].points[0].coord, faces[i].points[1].coord, faces[i].points[2].coord, faces[i].points[3].coord, lights[1]);
+			if (showLight1 || showLight2)
+				glVector3D(light1 + light2, false);
+			else
+				glVector3D(objectColor, false);
 			glBegin(GL_TRIANGLES);
+		}
+		if (showTexture) {
 			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[0].coord, true);
 			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[2].coord, true);
 			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[1].coord, true);
@@ -430,21 +494,29 @@ void GLWidget::drawMesh(vector<Face> faces)
 			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[0].coord, true);
 			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[2].coord, true);
 			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[3].coord, true);
-			/*glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[j].coord, true);
-			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[j+1].coord, true);
-			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[j+2].coord, true);
-			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[j+3].coord, true);
-			glEnd();
-			glBegin(GL_QUADS);
-			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[j].coord, true);
-			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[j + 3].coord, true);
-			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[j + 2].coord, true);
-			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[j + 1].coord, true);
-			*/
-			glEnd();
-		//}
+
+		}
+		else
+		{
+			glVector3D(faces[i].points[0].coord, true);
+			glVector3D(faces[i].points[2].coord, true);
+			glVector3D(faces[i].points[1].coord, true);
+			glVector3D(faces[i].points[0].coord, true);
+			glVector3D(faces[i].points[3].coord, true);
+			glVector3D(faces[i].points[2].coord, true);
+			glVector3D(faces[i].points[0].coord, true);
+			glVector3D(faces[i].points[1].coord, true);
+			glVector3D(faces[i].points[2].coord, true);
+			glVector3D(faces[i].points[0].coord, true);
+			glVector3D(faces[i].points[2].coord, true);
+			glVector3D(faces[i].points[3].coord, true);
+		}
+
+		glEnd();
 	}
-	glDisable(GL_TEXTURE_2D);
+	if (showTexture) {
+		glDisable(GL_TEXTURE_2D);
+	}
 }
 
 QVector3D GLWidget::processLighting(QVector3D p1Face, QVector3D p2Face, QVector3D p3Face, QVector3D p4Face, Light light) 
@@ -726,10 +798,11 @@ void GLWidget::processCoon4() {
 			curveMaxPointIndice.push_back(points.size() - 1);
 			pointsChaikin.push_back(vector<QVector3D>());
 
-			
+			/*
 			vector<vector<QVector3D>> pointsTmp = generateCoonsSurface(pointsChaikin[pointsChaikin.size() - 5], pointsChaikin[pointsChaikin.size() - 4], pointsChaikin[pointsChaikin.size() - 3], pointsChaikin[pointsChaikin.size() - 2], coonsDegree);
 			pointsChaikin.insert(pointsChaikin.end(), pointsTmp.begin(), pointsTmp.end());
-			
+			*/
+
 			coonsState = 0;
 		}
 
@@ -911,10 +984,12 @@ void GLWidget::keyPressEvent(QKeyEvent* e)
 	case Qt::Key_Minus:
 		depthBetweenPoints -= 1;
 		generateControlPoints();
+		generateControlPointsTriangle();
 		break;
 	case Qt::Key_Plus:
 		depthBetweenPoints += 1;
 		generateControlPoints();
+		generateControlPointsTriangle();
 		break;
 	case Qt::Key_0:
 		meshFaces = subdivideC(meshFaces);

@@ -91,6 +91,8 @@ public slots:
 	void validateCurve();
 	void generateCoons();
 
+	void processCoon4();
+
 private:
 	// Fonction rendu de la scène
 	void drawScene();
@@ -114,7 +116,6 @@ private:
 	vector<vector<QVector3D>> getAllChaikinPoints(vector<QVector3D> pts, int degree);
 	vector<vector<QVector3D>> generateCoonsSurface(vector<QVector3D> curve1, vector<QVector3D> curve2, int degree);
 	vector<vector<QVector3D>> GLWidget::generateCoonsSurface(vector<QVector3D> curve1, vector<QVector3D> curve2, vector<QVector3D> curve3, vector<QVector3D> curve4, int degree);
-	void processCoon4();
 	// Textures
 	void GLWidget::LoadGLTextures(const char * name);
 	void generateControlPoints();
@@ -173,7 +174,7 @@ private:
 	int precision = 10;
 	int joinOrder = 0;		// Raccordement 0-2
 	int depthBetweenPoints = 4;
-	bool showWireframe = false;
+	bool showWireframe = true;
 	bool showPts = true;
 	bool showLine = true;
 	bool showChaikin = true;
@@ -191,4 +192,5 @@ private:
 	void drawMesh(vector<Face> faces);
 	void generateControlPointsTriangle();
 	void createBezierTriangle(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs, vector<vector<Point>> points);
+	void drawMeshCustom(vector<Face> faces);
 };

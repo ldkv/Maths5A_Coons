@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1129</width>
-    <height>823</height>
+    <height>973</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>1129</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
@@ -66,7 +66,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
@@ -282,8 +282,14 @@
            </item>
            <item>
             <widget class="QCheckBox" name="cbShowWireframe">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="text">
               <string>Filaire</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -456,7 +462,7 @@
                <number>1000</number>
               </property>
               <property name="value">
-               <number>1</number>
+               <number>3</number>
               </property>
              </widget>
              <widget class="QPushButton" name="buttonCreateCurve">
@@ -514,7 +520,7 @@
                <number>1000</number>
               </property>
               <property name="value">
-               <number>1</number>
+               <number>3</number>
               </property>
              </widget>
              <widget class="Line" name="line_3">
