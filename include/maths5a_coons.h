@@ -18,14 +18,8 @@ private slots:
 	void updateStatus();
 	void setColor(int idButton);
 	void quit();
-	void showLine();
-	void showLineChainkin();
-	void setDegreeCurve();
-	void setDegreeCoons();
 	void generateCube();
 	void subdivide();
-	void validateCurve();
-	void generateCoons();
 
 private:
 	Ui::Maths5A_CoonsClass ui;

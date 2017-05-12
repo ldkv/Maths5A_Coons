@@ -29,11 +29,13 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	connect(ui.bJoin, SIGNAL(clicked()), glScene, SLOT(generateJoinPatch()));
 	connect(ui.bCancelJoin, SIGNAL(clicked()), glScene, SLOT(cancelJoin()));
 
+	//Courbes / Coons
+	connect(ui.buttonCreateCurve, SIGNAL(clicked()), glScene, SLOT(validateCurve()));
+	connect(ui.buttonGenerateCoons, SIGNAL(clicked()), glScene, SLOT(generateCoons()));
+	connect(ui.buttonGenerateCoons4, SIGNAL(clicked()), glScene, SLOT(generateCoons()));
 	//generation cube
 	connect(ui.buttonGenerateCube, SIGNAL(clicked()), this, SLOT(generateCube()));
-
 	// Interface de Subdivision
-	//connect(ui.buttonSubdivide, SIGNAL(clicked()), glScene, SLOT(subdivide()));
 	connect(ui.buttonSubdivide, SIGNAL(clicked()), this, SLOT(subdivide()));
 
 	// Interface lumières + traçage
@@ -49,9 +51,9 @@ Maths5A_Coons::Maths5A_Coons(QWidget *parent)
 	connect(ui.bResetCam, SIGNAL(clicked()), glScene, SLOT(resetCamera()));
 	connect(ui.bQuit, SIGNAL(clicked()), this, SLOT(quit()));
 	//Chainkin
-	connect(ui.cbLine, SIGNAL(stateChanged(int)), this, SLOT(showLine()));
-	connect(ui.cbLineChainkin, SIGNAL(stateChanged(int)), this, SLOT(showLineChaikin()));
-	connect(ui.spinDegreeCurve, SIGNAL(valueChanged(int)), this, SLOT(setDegreeCurve()));
+	connect(ui.cbLine, SIGNAL(stateChanged(int)), glScene, SLOT(displayLine(int)));
+	connect(ui.cbLineChaikin, SIGNAL(stateChanged(int)), glScene, SLOT(displayLineChaikin(int)));
+	connect(ui.spinDegreeCurve, SIGNAL(valueChanged(int)), glScene, SLOT(setChaikinDegree(int)));
 	// Définir la couleur des boutons et leur signal
 	QColor col = convertColor(glScene->objectColor);
 	QString qss = QString("background-color: %1").arg(col.name());
@@ -135,30 +137,6 @@ void Maths5A_Coons::updateStatus()
 		));
 }
 
-// Montrer/Cacher les ligne 
-void Maths5A_Coons::showLine()
-{
-	qDebug() << ui.cbLine->isChecked();
-}
-
-// Montrer/Cacher les ligne (chainkin)
-void Maths5A_Coons::showLineChainkin()
-{
-	qDebug() << ui.cbLineChainkin->isChecked();
-}
-
-// Changement degré lissage pour les courbes
-void Maths5A_Coons::setDegreeCurve()
-{
-	qDebug() << ui.spinDegreeCurve->value();
-}
-
-// Changement degré lissage pour Coons
-void Maths5A_Coons::setDegreeCoons()
-{
-	qDebug() << ui.spinDegreeCoons->value();
-}
-
 // Applique la generation du cube
 void Maths5A_Coons::generateCube()
 {
@@ -195,18 +173,6 @@ void Maths5A_Coons::subdivide()
 	{
 		qDebug() << "Loop Subdivision";
 	}
-}
-
-// Valider une courbe en cours de creation
-void Maths5A_Coons::validateCurve()
-{
-
-}
-
-// Applique Coons via les courbes créées
-void Maths5A_Coons::generateCoons()
-{
-
 }
 
 // Quitter

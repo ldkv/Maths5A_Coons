@@ -71,8 +71,8 @@ void GLWidget::initializeGL()
 	LoadGLTextures("texture.jpg");
 
 	generateControlPoints();
-	createCubeAlt();
-	dividedCube = subdivideC(cubeFaces);
+	//createCubeAlt();
+	//dividedCube = subdivideC(cubeFaces);
 	//dividedCube = subdivideC(dividedCube);
 	//dividedCube = subdivideC(dividedCube);
 	//meshFaces = subdivideC(meshFaces);
@@ -147,8 +147,8 @@ void GLWidget::drawScene()
 		drawMesh(ts, es, WHITE, 20);
 	}
 
-	//drawFaces(cubeFaces);
-	//drawFaces(dividedCube);
+	drawFaces(cubeFaces);
+	drawFaces(dividedCube);
 	//
 	drawFaces(meshFaces);
 	if (showTexture) {
@@ -696,27 +696,10 @@ void GLWidget::keyPressEvent(QKeyEvent* e)
 		m_theta -= 2.0f;
 		break;
 	case Qt::Key_Return:
-		// verification pour éviter d'incérer un doublon
-		if (curveMaxPointIndice.size() == 0 || curveMaxPointIndice[curveMaxPointIndice.size() - 1] != points.size() - 1)
-		{
-			curveMaxPointIndice.push_back(points.size()-1);
-			pointsChaikin.push_back(vector<QVector3D>());
-		}
+		validateCurve();
 		break;
 	case Qt::Key_M:
-		// on a besoin d'au moins 2 courbes valides donc pointsChaikin.size() doit etre au minimum 3
-		// car lorsqu'on press enter pour valider une courbe, on ajoute deja la prochaine courbe (vide), voir "case Qt::Key_Return"
-		if (pointsChaikin.size() > 2)
-		{
-			int degree = 4; // nombre de courbe intermédiaire généré
-			int maxSize = pointsChaikin.size() - 1;
-			vector<vector<QVector3D>> pointsTmp = generateCoonsSurface(pointsChaikin[maxSize-2], pointsChaikin[maxSize - 1], degree);
-			pointsChaikin.insert(pointsChaikin.end(), pointsTmp.begin(), pointsTmp.end());
-
-			coonCurveIndice.push_back(maxSize - 2);
-			coonCurveIndice.push_back(maxSize - 1 + degree);
-			pointsChaikin.push_back(vector<QVector3D>());
-		}
+		generateCoons();
 		break;
 	case Qt::Key_Minus:
 		depthBetweenPoints -= 1;
@@ -811,7 +794,7 @@ void GLWidget::createCubeAlt() {
 
 void GLWidget::subdivideCatmull()
 {
-	subdivideC(cubeFaces);
+	meshFaces = subdivideC(meshFaces);
 }
 
 void GLWidget::generateCude()
@@ -819,7 +802,60 @@ void GLWidget::generateCude()
 	createCube(ts, es, vs);
 }
 
-void GLWidget::subcat()
-{
+// Valider une courbe en cours de creation
+void GLWidget::validateCurve()
+{		// verification pour éviter d'incérer un doublon
+	if (curveMaxPointIndice.size() == 0 || curveMaxPointIndice[curveMaxPointIndice.size() - 1] != points.size() - 1)
+	{
+		curveMaxPointIndice.push_back(points.size() - 1);
+		pointsChaikin.push_back(vector<QVector3D>());
 
+		qDebug() << "Validate Curve " << showLine;
+	}
+}
+
+void GLWidget::generateCoons()
+{
+	// on a besoin d'au moins 2 courbes valides donc pointsChaikin.size() doit etre au minimum 3
+	// car lorsqu'on press enter pour valider une courbe, on ajoute deja la prochaine courbe (vide), voir "case Qt::Key_Return"
+	if (pointsChaikin.size() > 2)
+	{
+		int degree = 4; // nombre de courbe intermédiaire généré
+		int maxSize = pointsChaikin.size() - 1;
+		vector<vector<QVector3D>> pointsTmp = generateCoonsSurface(pointsChaikin[maxSize - 2], pointsChaikin[maxSize - 1], degree);
+		pointsChaikin.insert(pointsChaikin.end(), pointsTmp.begin(), pointsTmp.end());
+
+		coonCurveIndice.push_back(maxSize - 2);
+		coonCurveIndice.push_back(maxSize - 1 + degree);
+		pointsChaikin.push_back(vector<QVector3D>());
+
+		qDebug() << "Generate Coons : " << showLine;
+	}
+}
+
+// Montrer/Cacher les ligne 
+void GLWidget::displayLine(int val)
+{
+	if (val != 0)
+		showLine = true;
+	else
+		showLine = false;
+	qDebug() << "Show line : " << showLine;
+}
+
+// Montrer/Cacher les ligne (chainkin)
+void GLWidget::displayLineChaikin(int val)
+{
+	if (val != 0)
+		showChaikin = true;
+	else
+		showChaikin = false;
+
+	qDebug() << "Show line : " << showChaikin;
+}
+
+void GLWidget::setChaikinDegree(int val)
+{
+	chaikinDegree = val;
+	qDebug() << "Chainkin Degree : " << val;
 }

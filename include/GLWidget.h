@@ -75,6 +75,9 @@ public slots:
 	void setShowLight2(int h) { showLight2 = h == 0 ? false : true; }
 	void setShowLightDiffuse(int i) { showLightDiffuse = i == 0 ? false : true; }
 	void setShowLightSpecular(int i) { showLightSpecular = i == 0 ? false : true; }
+	void displayLine(int);
+	void displayLineChaikin(int);
+	void setChaikinDegree(int);
 	// Réinitialiser les données
 	void resetData();
 	// Réinitialiser le caméra à la vue par défaut
@@ -84,6 +87,8 @@ public slots:
 	void createCubeAlt();
 	void generateCude();
 	void subdivideCatmull();
+	void validateCurve();
+	void generateCoons();
 
 private:
 	// Fonction rendu de la scène
@@ -176,7 +181,6 @@ private:
 
 	QTimer *t_Timer;
 
-	void subcat();
 	void drawFaces(vector<Face> faces);
 	void drawMesh(vector<Face> faces);
 };
