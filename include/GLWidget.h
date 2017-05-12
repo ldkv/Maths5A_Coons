@@ -10,6 +10,7 @@
 #include <vector>
 #include <math.h>
 #include "AlgoMath.h"
+#include "Subdivision_Catmull.h"
 #include "Subdivision_LoopKobbelt.h"
 
 using namespace std;
@@ -63,6 +64,8 @@ signals:
 
 public slots:
 	void timeOutSlot();
+	void setDegreeU(int m) { degU = m; generateControlPoints(); }
+	void setDegreeV(int n) { degV = n; generateControlPoints(); }
 	void setJoinOrder(int j) { joinOrder = j; }
 	void setGrid(int g) { showGrid = g == 0 ? false : true; }
 	void setShowPts(int s) { showPts = s == 0 ? false : true; }
@@ -99,8 +102,10 @@ private:
 	// update chaikin points
 	vector<QVector3D> getChaikinPoints(vector<QVector3D> pts, int degree);
 	vector<vector<QVector3D>> getAllChaikinPoints(vector<QVector3D> pts, int degree);
+	vector<vector<QVector3D>> generateCoonsSurface(vector<QVector3D> curve1, vector<QVector3D> curve2, int degree);
 	// Textures
 	void GLWidget::LoadGLTextures(const char * name);
+	void generateControlPoints();
 
 	// Subdivision Loop - Kobbelt
 	vector<Triangle*> ts, tsOri; 
@@ -112,7 +117,8 @@ private:
 	QPoint mousePos;
 	vector<QVector3D> points;
 	vector<vector<QVector3D>> pointsChaikin;
-	vector<int> chaikinMaxPointIndice;
+	vector<int> curveMaxPointIndice;
+	vector<int> coonCurveIndice;
 	int pointSelected = -1;
 	bool needUpdate = false;
 
@@ -148,11 +154,11 @@ private:
 	// Les paramètres de l'UI
 	int modeGenPts = 2;		// 1 pour Aléatoire, 2 pour réglage de l'hauteur
 	int modeRotation = 0;	// 0 pour Objet, 1 pour Caméra
-	int degU = 0;
-	int degV = 0;
+	int degU =5;
+	int degV = 5;
 	int precision = 10;
 	int joinOrder = 0;		// Raccordement 0-2
-	int depthBetweenPoints = 0;
+	int depthBetweenPoints = 4;
 	bool showWireframe = false;
 	bool showPts = true;
 	bool showLine = true;
@@ -166,4 +172,9 @@ private:
 	bool showLightSpecular = false;
 
 	QTimer *t_Timer;
+
+	void createCubeAlt();
+	void subcat();
+	void drawFaces(vector<Face> faces);
+	void drawMesh(vector<Face> faces);
 };

@@ -42,6 +42,15 @@ void GLWidget::timeOutSlot()
 	update();
 }
 
+
+vector<Point> cubePoints;
+vector<Face> cubeFaces;
+vector<int> cubeIndices;
+vector<Face> dividedCube;
+vector<Point> ptsControl;
+vector<Face> meshFaces;
+vector<QVector3D> controlPoints;
+
 // Initialisation du module OpenGL
 void GLWidget::initializeGL()
 {
@@ -60,6 +69,14 @@ void GLWidget::initializeGL()
 
 	// Chargement de la texture
 	LoadGLTextures("texture.jpg");
+
+	generateControlPoints();
+	createCubeAlt();
+	dividedCube = subdivideC(cubeFaces);
+	//dividedCube = subdivideC(dividedCube);
+	//dividedCube = subdivideC(dividedCube);
+	//meshFaces = subdivideC(meshFaces);
+	//meshFaces = subdivideC(meshFaces);
 }
 
 // Redimensionner de la scène pour adapter à la fenêtre principale
@@ -129,6 +146,15 @@ void GLWidget::drawScene()
 		drawMesh(tsOri, esOri, BLUE, 5);
 		drawMesh(ts, es, WHITE, 20);
 	}
+
+	//drawFaces(cubeFaces);
+	//drawFaces(dividedCube);
+	//
+	drawFaces(meshFaces);
+	if (showTexture) {
+		drawMesh(meshFaces);
+	}
+	//drawPoints(controlPoints, { 0, 1.0, 0 }, 10);
 }
 
 void GLWidget::drawMesh(vector<Triangle*> ts, vector<Edge*> es, QVector3D color, int ptSize)
@@ -149,14 +175,85 @@ void GLWidget::drawMesh(vector<Triangle*> ts, vector<Edge*> es, QVector3D color,
 				glVector3D(v->coord, true);
 		glEnd();
 	}
+
 	if (showLine) {
 		// Surbriller les lines
-		drawLines(points, { 0, 1.0, 0 }, 6);
+		drawLines(points, { 0, 1.0, 0 }, 4);
 	}
 	if (showChaikin)
 	{
-		drawChaikinLine({ 0, 0, 1.0 }, 4);
+		drawChaikinLine({ 0.5f, 0.7f, 0.9f }, 4);
 	}
+}
+
+// Generation des points de controle
+void GLWidget::generateControlPoints()
+{
+	meshFaces.clear();
+
+	// Si l'utilisateur n'a pas changé les valeurs minimales
+	if (precision < 2 || degU < 2 || degV < 2)
+		return;
+
+	// Sinon, on efface les valeurs actuels des taleaux
+	ptsControl.clear();
+	//ptsJoin.clear();
+	//ptsHighlighted.clear();
+
+	//ptsControl.resize(degU);
+	int x, y, z, zx, zy;
+
+	// On fonction du style de genration de points que l'on souhaite obtenir
+
+		x = -degU / 2 * 20;
+		y = -degV / 2 * 20;
+		zx = 0;
+		zy = 0;
+		// Pour chacune des valeurs de nos axes
+		for (int i = 0; i < degU; i++)
+		{
+			for (int j = 0; j < degV; j++)
+			{
+				// On rajoute le point au tableau de points de controle
+				ptsControl.push_back(Point(QVector3D(x, y, zy)));
+				controlPoints.push_back(QVector3D(x, y, zy));
+				y += 20;
+				if (j < degV / 2)
+					zy += 5 * depthBetweenPoints;
+				else
+					zy -= 5 * depthBetweenPoints;
+			}
+			y = -degV / 2 * 20;
+			x += 20;
+			if (i < degU / 2)
+				zx += 5 * depthBetweenPoints;
+			else
+				zx -= 5 * depthBetweenPoints;
+			zy = zx;
+		}
+
+		vector<Point> tmpPoints;
+		int indexPass = degU - 1;
+		for (size_t i = 0; i < (degU)*(degV)-degU; i++){
+			if (i == indexPass) {
+				indexPass+= degU;
+			}
+			else
+			{
+				tmpPoints.clear();
+				tmpPoints.push_back(ptsControl[i]);
+				tmpPoints.push_back(ptsControl[i + 1]);
+				tmpPoints.push_back(ptsControl[i + degU + 1]);
+				tmpPoints.push_back(ptsControl[i + degU]);
+				meshFaces.push_back(tmpPoints);
+			}
+		}
+		/*tmpPoints.clear();
+		tmpPoints.push_back(ptsControl[(degU - 1)*(degV - 1) - 2]);
+		tmpPoints.push_back(ptsControl[(degU - 1)*(degV - 1) - 2]);
+		tmpPoints.push_back(ptsControl[0]);
+		tmpPoints.push_back(ptsControl[0 + 1]);
+		meshFaces.push_back(tmpPoints);*/
 }
 
 // Réinitialiser le caméra au paramètres par défaut
@@ -183,6 +280,47 @@ void GLWidget::LoadGLTextures(const char * name)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void GLWidget::drawMesh(vector<Face> faces)
+{
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+
+	for (int i = 0; i < faces.size(); i++)
+	{
+		//for (int j = 0; j <faces[i].points.size() - 3; j++)
+		//{
+			// Coordonnées des points avec coordonnées de la texture
+			//glBegin(GL_QUADS);
+			glBegin(GL_TRIANGLES);
+			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[0].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[2].coord, true);
+			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[1].coord, true);
+			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[0].coord, true);
+			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[3].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[2].coord, true);
+			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[0].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[1].coord, true);
+			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[2].coord, true);
+			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[0].coord, true);
+			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[2].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[3].coord, true);
+			/*glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[j].coord, true);
+			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[j+1].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[j+2].coord, true);
+			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[j+3].coord, true);
+			glEnd();
+			glBegin(GL_QUADS);
+			glTexCoord2f(0.0f, 0.0f);  glVector3D(faces[i].points[j].coord, true);
+			glTexCoord2f(1.0f, 0.0f);  glVector3D(faces[i].points[j + 3].coord, true);
+			glTexCoord2f(1.0f, 1.0f);  glVector3D(faces[i].points[j + 2].coord, true);
+			glTexCoord2f(0.0f, 1.0f);  glVector3D(faces[i].points[j + 1].coord, true);
+			*/
+			glEnd();
+		//}
+	}
+	glDisable(GL_TEXTURE_2D);
 }
 
 QVector3D GLWidget::processLighting(QVector3D p1Face, QVector3D p2Face, QVector3D p3Face, QVector3D p4Face, Light light) 
@@ -238,14 +376,14 @@ void GLWidget::drawLines(vector<QVector3D> pts, QVector3D color, int lineWidth) 
 	if (pts.size() == 0) return;
 	glVector3D(color, false);
 	glLineWidth(lineWidth);
-	for (size_t j = 0; j < chaikinMaxPointIndice.size() + 1; j++)
+	for (size_t j = 0; j < curveMaxPointIndice.size() + 1; j++)
 	{
 			vector<QVector3D> ptsBase = pts;
-			if (chaikinMaxPointIndice.size() > 0) {
-				if (j < chaikinMaxPointIndice.size() && ptsBase[chaikinMaxPointIndice[j]] != ptsBase.back())
-					ptsBase.erase(ptsBase.begin() + chaikinMaxPointIndice[j] + 1, ptsBase.end());
+			if (curveMaxPointIndice.size() > 0) {
+				if (j < curveMaxPointIndice.size() && ptsBase[curveMaxPointIndice[j]] != ptsBase.back())
+					ptsBase.erase(ptsBase.begin() + curveMaxPointIndice[j] + 1, ptsBase.end());
 				if (j != 0)
-					ptsBase.erase(ptsBase.begin(), ptsBase.begin() + chaikinMaxPointIndice[j - 1] + 1);
+					ptsBase.erase(ptsBase.begin(), ptsBase.begin() + curveMaxPointIndice[j - 1] + 1);
 			}
 
 			if (ptsBase.size() > 1)
@@ -277,6 +415,21 @@ void GLWidget::drawChaikinLine(QVector3D color, int lineWidth) {
 			glEnd();
 		}
 	}
+
+	for (size_t i = 0; i < coonCurveIndice.size(); i+=2)
+	{
+		for (size_t j = coonCurveIndice[i]; j < coonCurveIndice[i+1]+1; j++)
+		{
+			glBegin(GL_LINES);
+			for (size_t k = 0; k < pointsChaikin[j].size(); k++)
+			{
+				glVector3D(pointsChaikin[j][k], true);
+				glVector3D(pointsChaikin[j + 1][k], true);
+			}
+			glEnd();
+		}
+	}
+
 }
 
 vector<QVector3D> GLWidget::getChaikinPoints(vector<QVector3D> pts, int degree) {
@@ -307,16 +460,44 @@ vector<vector<QVector3D>> GLWidget::getAllChaikinPoints(vector<QVector3D> pts, i
 	vector<vector<QVector3D>> ptsChaikin = vector<vector<QVector3D>>();
 
 	if (pts.size() >= 2 && degree > 0) {
-		for (size_t k = 0; k < chaikinMaxPointIndice.size(); k++)
+		for (size_t k = 0; k < curveMaxPointIndice.size(); k++)
 		{
 			ptsChaikin.push_back(vector<QVector3D >());
 			vector<QVector3D> ptsBase = pts;
-			int start = k <= 0 ? 0 : chaikinMaxPointIndice[k-1];
-			ptsBase.erase(pts.begin() + start, pts.begin() + chaikinMaxPointIndice[k]);
+			int start = k <= 0 ? 0 : curveMaxPointIndice[k-1];
+			ptsBase.erase(pts.begin() + start, pts.begin() + curveMaxPointIndice[k]);
 			ptsChaikin[k] = getChaikinPoints(ptsBase, degree);
 		}
 	}
 	return ptsChaikin;
+}
+
+vector<vector<QVector3D>> GLWidget::generateCoonsSurface(vector<QVector3D> curve1, vector<QVector3D> curve2, int degree) {
+	vector<vector<QVector3D>> pts = vector<vector<QVector3D>>();
+	int size = curve1.size() < curve2.size() ? curve1.size() : curve2.size();
+
+	if (size < 1) return pointsChaikin; // verification des inputs
+
+	// réorganisation de l'ordre des courbes dans le vector pointsChaikin
+	pts.push_back(curve1);
+	pointsChaikin.pop_back();
+
+	for (size_t i = 0; i < degree; i++)
+	{
+		vector<QVector3D> ptsTmp = vector<QVector3D>();
+		float v = 1.0f / (1.0f + degree);
+		for (size_t j = 0; j < size; j++)
+		{
+			float v2 = v*(i + 1);
+			QVector3D vect = (1.0f - v2)*curve1[j] + v2 * curve2[j];
+			ptsTmp.push_back(vect);
+		}
+		pts.push_back(ptsTmp);
+	}
+	pts.push_back(curve2);
+	pointsChaikin.pop_back();
+
+	return pts;
 }
 
 // Dessiner d'un réseau des points
@@ -333,6 +514,27 @@ void GLWidget::drawPointsMatrix(vector<vector<QVector3D>> pts, QVector3D color, 
 		for (int j = 0; j < n; j++)
 			glVector3D(pts[i][j], true);
 	glEnd();
+}
+
+void GLWidget::drawFaces(vector<Face> faces)
+{
+	int nbPoints = faces.size();
+	if (nbPoints == 0)
+		return;
+	glColor3f(150.0f, 150.0f, 150.0f);
+	for (int i = 0; i < faces.size(); i++)
+	{
+		for(int j = 0; j < faces[i].points.size()-1; j++) {
+			glBegin(GL_LINES);
+			glVertex3f(faces[i].points[j].coord.x(), faces[i].points[j].coord.y(), faces[i].points[j].coord.z());
+			glVertex3f(faces[i].points[j+1].coord.x(), faces[i].points[j+1].coord.y(), faces[i].points[j+1].coord.z());
+			glEnd();
+		}
+		glBegin(GL_LINES);
+		glVertex3f(faces[i].points[faces[i].points.size()-1].coord.x(), faces[i].points[faces[i].points.size()-1].coord.y(), faces[i].points[faces[i].points.size()-1].coord.z());
+		glVertex3f(faces[i].points[0].coord.x(), faces[i].points[0].coord.y(), faces[i].points[0].coord.z());
+		glEnd();
+	}
 }
 
 // Conversion de coordonnées d'écran à coordonnées de la scène OPENGL
@@ -367,8 +569,8 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 			points.push_back(tmp);
 			
 			vector<QVector3D> ptsBase = points;
-			if (chaikinMaxPointIndice.size() > 0)
-				ptsBase.erase(ptsBase.begin(), ptsBase.begin() + chaikinMaxPointIndice[chaikinMaxPointIndice.size() - 1] + 1);
+			if (curveMaxPointIndice.size() > 0)
+				ptsBase.erase(ptsBase.begin(), ptsBase.begin() + curveMaxPointIndice[curveMaxPointIndice.size() - 1] + 1);
 
 			if (showChaikin) {
 				pointsChaikin[pointsChaikin.size() - 1] = getChaikinPoints(ptsBase, chaikinDegree);
@@ -495,11 +697,37 @@ void GLWidget::keyPressEvent(QKeyEvent* e)
 		break;
 	case Qt::Key_Return:
 		// verification pour éviter d'incérer un doublon
-		if (chaikinMaxPointIndice.size() == 0 || chaikinMaxPointIndice[chaikinMaxPointIndice.size() - 1] != points.size() - 1)
+		if (curveMaxPointIndice.size() == 0 || curveMaxPointIndice[curveMaxPointIndice.size() - 1] != points.size() - 1)
 		{
-			chaikinMaxPointIndice.push_back(points.size()-1);
+			curveMaxPointIndice.push_back(points.size()-1);
 			pointsChaikin.push_back(vector<QVector3D>());
 		}
+		break;
+	case Qt::Key_M:
+		// on a besoin d'au moins 2 courbes valides donc pointsChaikin.size() doit etre au minimum 3
+		// car lorsqu'on press enter pour valider une courbe, on ajoute deja la prochaine courbe (vide), voir "case Qt::Key_Return"
+		if (pointsChaikin.size() > 2)
+		{
+			int degree = 4; // nombre de courbe intermédiaire généré
+			int maxSize = pointsChaikin.size() - 1;
+			vector<vector<QVector3D>> pointsTmp = generateCoonsSurface(pointsChaikin[maxSize-2], pointsChaikin[maxSize - 1], degree);
+			pointsChaikin.insert(pointsChaikin.end(), pointsTmp.begin(), pointsTmp.end());
+
+			coonCurveIndice.push_back(maxSize - 2);
+			coonCurveIndice.push_back(maxSize - 1 + degree);
+			pointsChaikin.push_back(vector<QVector3D>());
+		}
+		break;
+	case Qt::Key_Minus:
+		depthBetweenPoints -= 1;
+		generateControlPoints();
+		break;
+	case Qt::Key_Plus:
+		depthBetweenPoints += 1;
+		generateControlPoints();
+		break;
+	case Qt::Key_0:
+		meshFaces = subdivideC(meshFaces);
 		break;
 	default:
 		break;
@@ -544,7 +772,43 @@ void GLWidget::resetData()
 	points.clear();
 	pointsChaikin.clear();
 	pointsChaikin.push_back(vector<QVector3D>());
-	chaikinMaxPointIndice.clear();
+	curveMaxPointIndice.clear();
+	coonCurveIndice.clear();
 	degU = 0;
 	degV = 0;
+}
+
+void GLWidget::createCubeAlt() {
+	/*cubePoints.push_back(QVector3D(-50, -50, -50));
+	cubePoints.push_back(QVector3D(-50, 50, -50));
+	cubePoints.push_back(QVector3D(-50, -50, 50));
+	cubePoints.push_back(QVector3D(-50, 50, 50));
+	cubePoints.push_back(QVector3D(50, -50, -50));
+	cubePoints.push_back(QVector3D(50, -50, 50));
+	cubePoints.push_back(QVector3D(50, 50, 50));
+	cubePoints.push_back(QVector3D(50, 50, -50));*/
+	vector<Point> tmp = { QVector3D(-50, -50, -50), QVector3D(50, -50, -50), QVector3D(50, 50, -50), QVector3D(-50, 50, -50) };
+	cubeFaces.push_back(tmp);
+	tmp = { QVector3D(-50, -50, -50), QVector3D(-50, -50, 50), QVector3D(50, -50, 50), QVector3D(50, -50, -50) };
+	cubeFaces.push_back(tmp);
+	tmp = { QVector3D(-50, -50, -50), QVector3D(-50, 50, -50), QVector3D(-50, 50, 50), QVector3D(-50, -50, 50) };
+	cubeFaces.push_back(tmp);
+	tmp = { QVector3D(-50, 50, 50), QVector3D(50, 50, 50), QVector3D(50, -50, 50), QVector3D(-50, -50, 50) };
+	cubeFaces.push_back(tmp);
+	//tmp = { QVector3D(-50, 50, -50), QVector3D(-50, 50, 50), QVector3D(50, 50, 50), QVector3D(50, 50, -50) };
+	tmp = { QVector3D(-50, 50, 50), QVector3D(50, 50, 50),  QVector3D(50, 200, 0) };
+	cubeFaces.push_back(tmp);
+	// Null
+	tmp = { QVector3D(-50, 50, 50),  QVector3D(50, 200, 0), QVector3D(-50, 50, -50), };
+	cubeFaces.push_back(tmp);
+	// Null
+	tmp = { QVector3D(-50, 50, -50), QVector3D(50, 200, 0), QVector3D(50, 50, -50) };
+	cubeFaces.push_back(tmp);
+	//tmp = { QVector3D(50, 50, -50), QVector3D(50, 50, 50), QVector3D(50, -50, 50), QVector3D(50, -50, -50) };
+	tmp = { QVector3D(50, 50, -50), QVector3D(50, 200, 0), QVector3D(50, 50, 50), QVector3D(50, -50, 50),  QVector3D(50, -50, -50) };
+	cubeFaces.push_back(tmp);
+}
+
+void GLWidget::subcat() {
+
 }
