@@ -147,6 +147,8 @@ Vertex* getOtherVertexfromEdge(Vertex* v, Edge* e)
 
 Vertex* getOtherVertexfromTriangle(Edge* e, Triangle* t)
 {
+	if (t == nullptr || e == nullptr)
+		return nullptr;
 	for each (Vertex* v in t->tVs)
 		if (v != e->v1 && v != e->v2)
 			return v;
@@ -223,7 +225,7 @@ void Subdivision_Loop(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> 
 	for (int i = 0; i < oldTriangleSize; i++)
 		delete ts[i];
 	ts.erase(ts.begin(), ts.begin() + oldTriangleSize);
-	//oldEdgeSize = 0;
+	oldEdgeSize = 0;
 }
 
 double alphaKobbelt[MAX_EDGES_ADJACENT];
@@ -305,6 +307,155 @@ void Subdivision_Kobbelt(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex
 		}
 	}
 
+	// Supprimer les ancients edges
+	for (int i = 0; i < oldEdgeSize; i++)
+	{
+		removeEdgefromVertex(es[i], es[i]->v1);
+		removeEdgefromVertex(es[i], es[i]->v2);
+		delete es[i];
+	}
+	es.erase(es.begin(), es.begin() + oldEdgeSize);
+
+	// Supprimer les ancients triangles
+	for (int i = 0; i < oldTriangleSize; i++)
+		delete ts[i];
+	ts.erase(ts.begin(), ts.begin() + oldTriangleSize);
+	oldEdgeSize = 0;
+}
+
+void Subdivision_Butterfly(vector<Triangle*> &ts, vector<Edge*> &es, vector<Vertex*> &vs)
+{
+	// Calculer les edge points
+	for (int i = 0; i < es.size(); i++)
+	{
+		QVector3D v1 = es[i]->v1->coord;
+		QVector3D v2 = es[i]->v2->coord;
+		QVector3D vL, vR, vLL, vLR, vRL, vRR;
+		bool testVL = false, testVR = false, testVLL = false, testVLR = false, testVRL = false, testVRR = false;
+		Vertex* vtemp, *vtemp2;
+		Edge* etemp;
+		
+		if (es[i]->t1 != nullptr)
+		{
+			vtemp = getOtherVertexfromTriangle(es[i], es[i]->t1);
+			vL = vtemp->coord;
+			testVL = true;
+			etemp = getEdgefromVertexes(es, es[i]->v1, vtemp);
+			vtemp2 = getOtherVertexfromTriangle(etemp, etemp->t1 != es[i]->t1 ? etemp->t1 : etemp->t2);
+			if (vtemp2 != nullptr)
+			{
+				vLL = vtemp2->coord;
+				testVLL = true;
+			}
+			etemp = getEdgefromVertexes(es, es[i]->v2, vtemp);
+			vtemp2 = getOtherVertexfromTriangle(etemp, etemp->t1 != es[i]->t1 ? etemp->t1 : etemp->t2);
+			if (vtemp2 != nullptr)
+			{
+				vLR = vtemp2->coord;
+				testVLR = true;
+			}
+		}
+
+		if (es[i]->t2 != nullptr)
+		{
+			vtemp = getOtherVertexfromTriangle(es[i], es[i]->t2);
+			vR = vtemp->coord;
+			testVR = true;
+			etemp = getEdgefromVertexes(es, es[i]->v1, vtemp);
+			vtemp2 = getOtherVertexfromTriangle(etemp, etemp->t1 != es[i]->t2 ? etemp->t1 : etemp->t2);
+			if (vtemp2 != nullptr)
+			{
+				vRL = vtemp2->coord;
+				testVRL = true;
+			}
+			etemp = getEdgefromVertexes(es, es[i]->v2, vtemp);
+			vtemp2 = getOtherVertexfromTriangle(etemp, etemp->t1 != es[i]->t2 ? etemp->t1 : etemp->t2);
+			if (vtemp2 != nullptr)
+			{
+				vRR = vtemp2->coord;
+				testVRR = true;
+			}
+		}
+
+		if (testVL && testVR && testVLL && testVLR && testVRR && testVRL)
+		{
+			es[i]->edgePt = 0.5*(v1 + v2) + 0.125*(vL + vR) - 0.0625*(vLL + vLR + vRL + vRR);
+			continue;
+		}
+		if (testVL && testVR && testVRL && testVRR && testVLR && !testVLL)
+		{
+			es[i]->edgePt = 0.375*v1 + 0.625*v2 + 0.0625*vL + 0.1875*vR - 0.0625*(2 * vRR + vLR + vRL);
+			continue;
+		}
+		if (testVL && testVR && testVRL && testVRR && testVLL && !testVLR)
+		{
+			es[i]->edgePt = 0.375*v2 + 0.625*v1 + 0.0625*vL + 0.1875*vR - 0.0625*(2 * vRL + vLL + vRR);
+			continue;
+		}
+		if (testVL && testVR && testVLL && testVLR && testVRR && !testVRL)
+		{
+			es[i]->edgePt = 0.375*v1 + 0.625*v2 + 0.0625*vR + 0.1875*vL - 0.0625*(2 * vLR + vLL + vRR);
+			continue;
+		}
+		if (testVL && testVR && testVLL && testVLR && testVRL && !testVRR)
+		{
+			es[i]->edgePt = 0.375*v2 + 0.625*v1 + 0.0625*vR + 0.1875*vL - 0.0625*(2 * vLL + vLR + vRL);
+			continue;
+		}
+		if (testVL && testVR && testVLL && testVLR && !testVRL && !testVRR)
+		{
+			es[i]->edgePt = 0.5*(v1 + v2) + 0.25*vL - 0.125*(vLL + vLR);
+			continue;
+		}
+		if (testVL && testVR && testVRL && testVRR && !testVLL && !testVLR)
+		{
+			es[i]->edgePt = 0.5*(v1 + v2) + 0.25*vR - 0.125*(vRL + vRR);
+			continue;
+		}
+		if (testVL && testVR)
+		{
+			es[i]->edgePt = 0.5*(v1 + v2);
+			continue;
+		}
+		es[i]->edgePt = 0.5*(v1 + v2);
+		/*if (testVR && testVRL && testVRR)
+		{
+			vtemp = getOtherVertexfromTriangle(es[i], es[i]->t2);
+			vR = vtemp->coord;
+			etemp = getEdgefromVertexes(es, es[i]->v1, vtemp);
+			vtemp2 = getOtherVertexfromTriangle(etemp, etemp->t1 != es[i]->t1 ? etemp->t1 : etemp->t2);
+			vRL = vtemp2->coord;
+			etemp = getEdgefromVertexes(es, es[i]->v1, vtemp2);
+			vtemp2 = getOtherVertexfromTriangle(etemp, etemp->t1 != es[i]->t1 ? etemp->t1 : etemp->t2);
+
+
+			etemp = getEdgefromVertexes(es, es[i]->v2, vtemp);
+			vtemp2 = getOtherVertexfromTriangle(etemp, etemp->t1 != es[i]->t1 ? etemp->t1 : etemp->t2);
+			if (vtemp2 != nullptr)
+			{
+				vRR = vtemp2->coord;
+				testVRR = true;
+			}
+		}*/
+
+	}
+
+	int oldTriangleSize = ts.size();
+	int oldEdgeSize = es.size();
+	// Calculer les nouveaux triangles
+	for (int i = 0; i < oldTriangleSize; i++)
+	{
+		Vertex *eP0 = new Vertex(ts[i]->tEs[0]->edgePt);
+		Vertex *eP1 = new Vertex(ts[i]->tEs[1]->edgePt);
+		Vertex *eP2 = new Vertex(ts[i]->tEs[2]->edgePt);
+		vs.push_back(eP0);
+		vs.push_back(eP1);
+		vs.push_back(eP2);
+		addTriangle(ts[i]->tVs[0], eP1, eP2, ts, es);
+		addTriangle(ts[i]->tVs[1], eP0, eP2, ts, es);
+		addTriangle(ts[i]->tVs[2], eP0, eP1, ts, es);
+		addTriangle(eP0, eP1, eP2, ts, es);
+	}
 	// Supprimer les ancients edges
 	for (int i = 0; i < oldEdgeSize; i++)
 	{

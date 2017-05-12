@@ -135,14 +135,14 @@ void GLWidget::drawScene()
 	vector<QVector3D> ptlight = { lights[0].posLight };
 	vector<QVector3D> ptlight2 = { lights[1].posLight };
 	// Dessin de la représentation des lights (points)
-	drawPoints(ptlight, lights[0].iAmbiant, 20);
-	drawPoints(ptlight2, lights[1].iAmbiant, 20);
+	//drawPoints(ptlight, lights[0].iAmbiant, 20);
+	//drawPoints(ptlight2, lights[1].iAmbiant, 20);
 
 	// Affichage des points de controle et des vertex du patch
 	if (showPts)
 	{
 		// Surbriller les points de raccordement
-		drawPoints(points, { 0, 1.0, 0 }, 10);
+		//drawPoints(points, { 0, 1.0, 0 }, 10);
 		drawMesh(tsOri, esOri, BLUE, 5);
 		drawMesh(ts, es, WHITE, 20);
 	}
@@ -150,9 +150,9 @@ void GLWidget::drawScene()
 	//drawFaces(cubeFaces);
 	//drawFaces(dividedCube);
 	//
-	drawFaces(meshFaces);
+	//drawFaces(meshFaces);
 	if (showTexture) {
-		drawMesh(meshFaces);
+		//drawMesh(meshFaces);
 	}
 	//drawPoints(controlPoints, { 0, 1.0, 0 }, 10);
 }
@@ -161,14 +161,13 @@ void GLWidget::drawMesh(vector<Triangle*> ts, vector<Edge*> es, QVector3D color,
 {
 	for each (Triangle* t in ts)
 	{
-/*		glVector3D(color, false);
+		/*glVector3D(color, false);
 		glPointSize(ptSize);
 		glBegin(GL_POINTS);
-			glVector3D(t->v1->coord, true);
-			glVector3D(t->v2->coord, true);
-			glVector3D(t->v3->coord, true);
-		glEnd();
-		*/
+		for each (Vertex* v in t->tVs)
+			glVector3D(v->coord, true);
+		glEnd();*/
+		
 		glVector3D(color, false);
 		glBegin(GL_LINE_LOOP);
 			for each (Vertex* v in t->tVs)
@@ -260,7 +259,8 @@ void GLWidget::generateControlPoints()
 void GLWidget::subdivide()
 {
 	//Subdivision_Loop(ts, es, vs);
-	Subdivision_Kobbelt(ts, es, vs);
+	//Subdivision_Kobbelt(ts, es, vs);
+	Subdivision_Butterfly(ts, es, vs);
 }
 
 void GLWidget::LoadGLTextures(const char * name)
